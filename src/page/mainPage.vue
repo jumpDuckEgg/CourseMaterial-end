@@ -6,10 +6,10 @@
 
 <script>
 export default {
-  name: 'HelloWorld',
+  name: 'mainPage',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      msg: '我是主页'
     }
   }
 }
