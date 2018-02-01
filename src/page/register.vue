@@ -74,7 +74,8 @@ export default {
                 this.$notify({
                     type:'success',
                     message:result.message
-                })
+                });
+                this.$router.push("/")
             }
           });
         } else {

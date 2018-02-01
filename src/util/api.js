@@ -57,5 +57,8 @@ export default {
     },
     userRegister(data){
         return instance.post('/register',data);
+    },
+    getAllUsers(){
+        return instance.get('/user');
     }
 }

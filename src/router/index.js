@@ -16,8 +16,18 @@ const MainPage = resolve => {
   })
 }
 const Register = resolve => {
-  require.ensure(['@/page/register.vue'],()=>{
+  require.ensure(['@/page/register.vue'], () => {
     resolve(require('@/page/register.vue'))
+  })
+}
+const Error404 = resolve => {
+  require.ensure(['@/page/error404.vue'], () => {
+    resolve(require('@/page/error404.vue'))
+  })
+}
+const UserInformation = resolve => {
+  require.ensure(['@/page/user/user.vue'], () => {
+    resolve(require('@/page/user/user.vue'))
   })
 }
 
@@ -35,11 +45,24 @@ const router = new Router({
       path: '/login',
       name: 'login',
       component: Login
-    },{
-      path:'/register',
-      name:'register',
-      component:Register
+    }, {
+      path: '/register',
+      name: 'register',
+      component: Register
+    }, {
+      path: '/user',
+      name: 'userInformation',
+      component: UserInformation,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '*',
+      name: 'error',
+      component: Error404
     }
+
   ]
 });
 

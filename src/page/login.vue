@@ -7,10 +7,10 @@
              <el-input v-model="form.username"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop='password'>
-             <el-input type="password" v-model="form.password"></el-input>
+             <el-input type="password" v-model="form.password" @keyup.enter.native="onSubmit('form')"></el-input>
         </el-form-item>
         <div class="login__button">
-            <el-button type="primary" @click="onSubmit('form')">登陆</el-button>
+            <el-button type="primary" @click="onSubmit('form')" >登陆</el-button>
             <el-button @click="resetForm('form')">取消</el-button>
         </div>
     </el-form>
@@ -46,7 +46,7 @@ export default {
           };
           api.userLogin(data).then(data => {
             let result = data.data;
-            if (result.code == 4) {
+            if ( result.code == 2 || result.code == 3) {
               this.$notify({
                 type: "error",
                 message: result.message
