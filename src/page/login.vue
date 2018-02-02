@@ -45,7 +45,7 @@ export default {
             password: this.form.password
           };
           api.userLogin(data).then(data => {
-            let result = data.data;
+            let result = data;
             if ( result.code == 2 || result.code == 3) {
               this.$notify({
                 type: "error",

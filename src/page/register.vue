@@ -60,11 +60,12 @@ export default {
         if (valid) {
           let data = {
             username: this.form.username,
-            password: this.form.password
+            password: this.form.password,
+            userType:1
           };
     
           api.userRegister(data).then(data => {
-            let result = data.data;
+            let result = data;
             if (result.code == 5) {
               this.$notify({
                 type: "error",

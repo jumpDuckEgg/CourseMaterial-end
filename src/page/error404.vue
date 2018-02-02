@@ -9,7 +9,7 @@
           <div class="error404__content-messageV2">
             请核对您输入的页面地址是否正确哦~
           </div>
-          <el-button type="primary">
+          <el-button type="primary" @click="backMain">
               返回首页
           </el-button>
       </div>
@@ -18,11 +18,16 @@
 
 <script>
 export default {
-  name: "404",
+  name: "error404",
   data() {
     return {
       msg: "404"
     };
+  },
+  methods:{
+    backMain(){
+      this.$router.push('/')
+    }
   }
 };
 </script>
