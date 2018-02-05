@@ -30,17 +30,55 @@ const UserInformation = resolve => {
     resolve(require('@/page/user/user.vue'))
   })
 }
+const CourseIndex = resolve => {
+  require.ensure(['@/page/course/course.vue'], () => {
+    resolve(require('@/page/course/course.vue'))
+  })
+}
+const CreateCourse = resolve => {
+  require.ensure(['@/page/course/createCourse.vue'], () => {
+    resolve(require('@/page/course/createCourse.vue'))
+  })
+}
+const DeleteCourse = resolve => {
+  require.ensure(['@/page/course/deleteCourse.vue'], () => {
+    resolve(require('@/page/course/deleteCourse.vue'))
+  })
+}
 
 const router = new Router({
   mode: 'history',
   routes: [
     {
       path: '/',
-      name: 'mainPage',
       component: MainPage,
       meta: {
         requiresAuth: true
-      }
+      },
+      children: [
+        {
+          path: 'user',
+          name: 'userInformation',
+          component: UserInformation,
+        },
+        {
+          path: 'course',
+          component: CourseIndex,
+          children: [
+            {
+              path: 'createcourse',
+              name: 'createCourse',
+              component: CreateCourse
+            },
+            {
+              path: 'deletecourse',
+              name: 'deleteCourse',
+              component: DeleteCourse
+            }
+          ]
+        }
+
+      ]
     }, {
       path: '/login',
       name: 'login',
@@ -49,13 +87,6 @@ const router = new Router({
       path: '/register',
       name: 'register',
       component: Register
-    }, {
-      path: '/user',
-      name: 'userInformation',
-      component: UserInformation,
-      meta: {
-        requiresAuth: true
-      }
     },
     {
       path: '*',

@@ -25,12 +25,12 @@
                   <el-submenu index="1">
                     <template slot="title">
                       <i class="el-icon-location"></i>
-                      <span>导航一</span>
+                      <span>课程</span>
                     </template>
                     <el-menu-item-group>
                       <template slot="title">分组一</template>
-                      <el-menu-item index="1-1">选项1</el-menu-item>
-                      <el-menu-item index="1-2">选项2</el-menu-item>
+                      <el-menu-item index="1-1" @click="tolink('/course/createCourse')">添加课程</el-menu-item>
+                      <el-menu-item index="1-2" @click="tolink('/course/deleteCourse')">删除课程</el-menu-item>
                     </el-menu-item-group>
                     <el-menu-item-group title="分组2">
                       <el-menu-item index="1-3">选项3</el-menu-item>
@@ -50,7 +50,9 @@
                   </el-menu-item>
                 </el-menu>
           </el-aside>
-          <el-main>Main</el-main>
+          <el-main>
+            <router-view></router-view>
+          </el-main>
         </el-container>
       </el-container>
   </div>
@@ -78,6 +80,9 @@ export default {
           message: "登出失败"
         });
       }
+    },
+    tolink(data){
+      this.$router.push(data)
     }
   }
 };
