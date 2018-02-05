@@ -6,8 +6,8 @@
         <el-form-item label="课程名称:">
             <el-input v-model="form.name"></el-input>
         </el-form-item>
-        <el-form-item label="课程名称:">
-            <el-input v-model="form.name"></el-input>
+        <el-form-item label="课程描述:">
+            <el-input type="textarea" autosize v-model="form.description"></el-input>
         </el-form-item>
     </el-form>
   </div>
@@ -20,7 +20,8 @@ export default {
     return {
       msg: "创建课程",
       form: {
-          name:''
+          name:'',
+          description:''
       }
     };
   }
