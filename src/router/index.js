@@ -64,16 +64,23 @@ const router = new Router({
         {
           path: 'course',
           component: CourseIndex,
+          
           children: [
             {
               path: 'createcourse',
               name: 'createCourse',
-              component: CreateCourse
+              component: CreateCourse,
+              meta: {
+                requiresAuth: true
+              },
             },
             {
               path: 'deletecourse',
               name: 'deleteCourse',
-              component: DeleteCourse
+              component: DeleteCourse,
+              meta: {
+                requiresAuth: true
+              },
             }
           ]
         }

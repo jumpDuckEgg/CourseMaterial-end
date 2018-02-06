@@ -12,5 +12,9 @@ export default {
     //获取用户信息
     getAllUsers(){
         return api.get('/user');
+    },
+    //获取上传token
+    getUploadToken(params){
+        return api.post('/uploadtoken',params);
     }
 }
