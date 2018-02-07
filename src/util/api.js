@@ -15,6 +15,15 @@ export default {
     },
     //获取上传token
     getUploadToken(params){
-        return api.post('/uploadtoken',params);
+        return api.post('/uploadtoken',params).then(res => res.data);
+    },
+    // 创建课程
+    createCourse(params){
+        return api.post('/course/createcourse',params).then(res => res.data);
+    },
+    //获取全部课程
+    findAllCourse(){
+        return api.get('/course/findallcourse').then(res => res.data);
     }
+
 }

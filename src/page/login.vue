@@ -58,7 +58,11 @@ export default {
               });
               let token = result.data.token;
               let username = result.data.username;
-              this.$store.dispatch("UserLogin", token);
+              let data = {
+                token:token,
+                username:username
+              }
+              this.$store.dispatch("UserLogin", data);
               let redirectUrl = decodeURIComponent(
                 this.$route.query.redirect || "/"
               );

@@ -33,7 +33,7 @@
                       <el-menu-item index="1-2" @click="tolink('/course/deleteCourse')">删除课程</el-menu-item>
                     </el-menu-item-group>
                     <el-menu-item-group title="分组2">
-                      <el-menu-item index="1-3">选项3</el-menu-item>
+                      <el-menu-item index="1-3">添加课程资料</el-menu-item>
                     </el-menu-item-group>
                     <el-submenu index="1-4">
                       <template slot="title">选项4</template>
