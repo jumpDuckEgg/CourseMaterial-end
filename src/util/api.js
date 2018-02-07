@@ -24,6 +24,9 @@ export default {
     //获取全部课程
     findAllCourse(){
         return api.get('/course/findallcourse').then(res => res.data);
+    },
+    // 删除课程
+    deleteCourse(params){
+        return api.post('/course/deletecourse',params).then(res => res.data)
     }
-
 }

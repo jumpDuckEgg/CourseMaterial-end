@@ -10,8 +10,8 @@
               <span>{{ props.row.description }}</span>
             </el-form-item>
             <el-form-item label="课程申请书：">
-                <a :href="props.row.course_declaration">下载</a>
-                <!-- <el-button type="text" @click="download(props.row.course_declaration)">下载</el-button> -->
+                <!-- <a :href="props.row.course_declaration">下载</a> -->
+                <el-button type="text" @click="download(props.row.course_declaration)">下载</el-button>
             </el-form-item>
           </el-form>
           </template>
@@ -63,9 +63,39 @@ export default {
     },
     handleDelete(index, row) {
       console.log(index, row);
+      this.$confirm("此操作将永久删除该课程, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          let data = {
+            course_id: row.course_id
+          };
+          console.log(data);
+          api.deleteCourse(data).then(res => {
+            if (res.code == 9) {
+              this.$message({
+                type: "success",
+                message: "删除成功!"
+              });
+              api.findAllCourse().then(res => {
+                console.log(res.data);
+                this.content = res.data;
+              });
+            }
+          });
+        })
+        .catch(err => {
+          console.log(err);
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     },
-    download(url){
-      
+    download(url) {
+      window.location.href = url;
     }
   }
 };
@@ -73,14 +103,14 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang='scss'scoped>
-.demo-table-expand{
+.demo-table-expand {
   font-size: 0;
 }
-.demo-table-expand label{
+.demo-table-expand label {
   width: 90px;
   color: #99a9bf;
 }
-.demo-table-expand .el-form-item{
+.demo-table-expand .el-form-item {
   margin-right: 0;
   margin-bottom: 0;
   width: 50%;

@@ -152,6 +152,7 @@ export default {
     handleRemove(file, fileList) {
       console.log(file, fileList);
       this.imageUrl = "";
+      this.disabledFlag = false;
     },
     handleDocSuccess(response, file, fileList) {
       this.docUrl = response.key;
@@ -160,6 +161,7 @@ export default {
     handleDocRemove(file, fileList) {
       console.log(file, fileList);
       this.docUrl = "";
+      this.disabledFlag = false;
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;

@@ -7,7 +7,7 @@ Vue.use(Vuex);
 
 const state = {
     token:window.sessionStorage.getItem('token'),
-    username:''
+    username:window.sessionStorage.getItem('username')
 }
 
 export default new Vuex.Store({
