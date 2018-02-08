@@ -45,6 +45,16 @@ const DeleteCourse = resolve => {
     resolve(require('@/page/course/deleteCourse.vue'))
   })
 }
+const ExamineCourse = resolve => {
+  require.ensure(['@/page/course/examineCourse.vue'],()=>{
+    resolve(require('@/page/course/examineCourse.vue'))
+  })
+}
+const AddCourseMaterial = resolve =>{
+  require.ensure(['@/page/course/addCourseMaterial.vue'],()=>{
+    resolve(require('@/page/course/addCourseMaterial.vue'))
+  })
+}
 
 const router = new Router({
   mode: 'history',
@@ -78,6 +88,22 @@ const router = new Router({
               path: 'deletecourse',
               name: 'deleteCourse',
               component: DeleteCourse,
+              meta: {
+                requiresAuth: true
+              },
+            },
+            {
+              path: 'examinecourse',
+              name: 'examineCourse',
+              component: ExamineCourse,
+              meta: {
+                requiresAuth: true
+              },
+            },
+            {
+              path: 'addCourseMaterial',
+              name: 'addCourseMaterial',
+              component: AddCourseMaterial,
               meta: {
                 requiresAuth: true
               },
