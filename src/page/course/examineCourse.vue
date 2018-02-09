@@ -1,5 +1,7 @@
 <template>
-  <div class="examineCourse">
+  <div class="examineCourse" v-loading="loading"
+    element-loading-text="拼命加载中"
+    element-loading-spinner="el-icon-loading">
     <h1>{{ msg }}</h1>
     <div>
       <el-table :data="content" style="width:100%">
@@ -64,7 +66,6 @@
                 <div></div>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">取 消</el-button>
                 <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
             </span>
         </el-dialog>
@@ -81,14 +82,20 @@ export default {
       msg: "审批课程",
       content: [],
       dialogVisible: false,
-      courseContent: {}
+      courseContent: {},
+      loading: true
     };
   },
   computed: {},
   created() {
-    api.findAllCourse().then(res => {
-      this.content = res.data;
-    });
+    api
+      .findAllCourse()
+      .then(res => {
+        this.content = res.data;
+      })
+      .then(() => {
+        this.loading = false;
+      });
   },
   methods: {
     publishStatusType: status => {
@@ -152,10 +159,12 @@ export default {
               }
             })
             .then(() => {
-              api.findAllCourse().then(res => {
-                console.log(res.data);
-                this.content = res.data;
-              });
+              this.loading = true;
+              return api.findAllCourse();
+            })
+            .then(res => {
+              this.content = res.data;
+              this.loading = false;
             });
         })
         .catch(() => {
@@ -193,10 +202,12 @@ export default {
               }
             })
             .then(() => {
-              api.findAllCourse().then(res => {
-                console.log(res.data);
-                this.content = res.data;
-              });
+              this.loading = true;
+              return api.findAllCourse();
+            })
+            .then(res => {
+              this.content = res.data;
+              this.loading = false;
             });
         })
         .catch(err => {

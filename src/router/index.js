@@ -40,9 +40,9 @@ const CreateCourse = resolve => {
     resolve(require('@/page/course/createCourse.vue'))
   })
 }
-const DeleteCourse = resolve => {
-  require.ensure(['@/page/course/deleteCourse.vue'], () => {
-    resolve(require('@/page/course/deleteCourse.vue'))
+const ModifyCourse = resolve => {
+  require.ensure(['@/page/course/modifyCourse.vue'], () => {
+    resolve(require('@/page/course/modifyCourse.vue'))
   })
 }
 const ExamineCourse = resolve => {
@@ -85,9 +85,9 @@ const router = new Router({
               },
             },
             {
-              path: 'deletecourse',
-              name: 'deleteCourse',
-              component: DeleteCourse,
+              path: 'modifyCourse',
+              name: 'modifyCourse',
+              component: ModifyCourse,
               meta: {
                 requiresAuth: true
               },

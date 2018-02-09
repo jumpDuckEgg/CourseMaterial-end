@@ -125,6 +125,7 @@ export default {
           };
           this.submintFlag = true;
           api.createCourse(data).then(res => {
+            
             this.submintFlag = false;
             if (res.code == 7) {
               this.$refs.form.resetFields();
@@ -138,6 +139,7 @@ export default {
               this.$message.warning(`${res.message}`);
             }
           });
+          
         }
       });
     },
@@ -166,6 +168,7 @@ export default {
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
+      
     },
     handleExceed(files, fileList) {
       this.$message.warning(`当前限制选择 1 个文件`);

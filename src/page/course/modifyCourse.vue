@@ -1,5 +1,7 @@
 <template>
-  <div class="deleteCourse">
+  <div class="deleteCourse"  v-loading="loading"
+    element-loading-text="拼命加载中"
+    element-loading-spinner="el-icon-loading">
     <h1>{{ msg }}</h1>
     <div>
       <el-table :data="content" style="width:100%">
@@ -127,9 +129,10 @@
 import _ from "lodash";
 import api from "../../util/api.js";
 export default {
-  name: "deleteCourse",
+  name: "modifyCourse",
   data() {
     return {
+      loading:true,
       msg: "修改课程",
       content: [],
       dialogVisible: false,
@@ -162,8 +165,15 @@ export default {
     };
   },
   created() {
-    api.findAllCourse().then(res => {
+    let data = {
+      params: {
+        author: this.$store.state.username
+      }
+    };
+    api.findAllCourseByAuthor(data).then(res => {
       this.content = res.data;
+    }).then(()=>{
+      this.loading=false;
     });
   },
   methods: {

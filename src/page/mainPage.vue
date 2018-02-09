@@ -30,7 +30,7 @@
                     <el-menu-item-group>
                       <template slot="title">分组一</template>
                       <el-menu-item index="1-1" @click="tolink('/course/createCourse')">添加课程</el-menu-item>
-                      <el-menu-item index="1-2" @click="tolink('/course/deleteCourse')">修改课程</el-menu-item>
+                      <el-menu-item index="1-2" @click="tolink('/course/modifyCourse')">修改课程</el-menu-item>
                       <el-menu-item index="1-3" @click="tolink('/course/examineCourse')">审核课程</el-menu-item>
                     </el-menu-item-group>
                     <el-menu-item-group title="分组2">

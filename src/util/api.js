@@ -25,6 +25,10 @@ export default {
     findAllCourse() {
         return api.get('/course/findallcourse').then(res => res.data);
     },
+    //获取作者全部课程
+    findAllCourseByAuthor(params) {
+        return api.post('/course/findAllCourseByAuthor',params).then(res => res.data);
+    },
     // 删除课程
     deleteCourse(params) {
         return api.post('/course/deletecourse', params).then(res => res.data)
