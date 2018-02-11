@@ -10,51 +10,45 @@
             v-for="item in courseContent"
             :key="item.course_name"
             :label="item.course_name"
-            :value="item.course_name">
+            :value="item.course_id">
           </el-option>
         </el-select>
       </div>
-      <div class="courseMaterial__item">
-        <span>选择添加的资源类型：</span>
-         <el-checkbox-group v-model="checkboxGroup" style="margin:10px 0;"  >
-            <el-checkbox-button v-for="material in materials" :label="material" :key="material" @change="changeGroup" >{{material}}</el-checkbox-button>
-         </el-checkbox-group>
-      </div>
-      <!-- 课件资源 -->
-      <el-row :class="{ courseware:true, coursewareShow : coursewareFlag}"  justify type="flex">
-        <el-col :span='2' >课件资源：</el-col>
-        <el-col>
-          <el-upload
-              :data="{
-                'token':coursewareToken
-              }"
-            :action="coursewareUploadUrl"
-            :on-preview="handleCoursewarePreview"
-            :on-remove="handleCoursewareRemove"
-            :before-remove="CoursewarebeforeRemove"
-            multiple
-            :limit="3"
-            :on-success="handleCoursewareSuccess"
-            :file-list="CoursewarefileList"
-            :before-upload="beforeCoursewareUpload"
-            :on-exceed="handleCoursewareExceed"
-            >
-            <el-button size="small" type="primary">点击上传</el-button>
-            <!-- <div slot="tip" class="el-upload__tip">只能上传ppt文件，且不超过500kb</div> -->
-          </el-upload>
-        </el-col>
-      </el-row>
-      <!-- 实验资源 -->
-
+      <!-- <template v-if="value"> -->
+        <template v-if="true">
+         <div class="courseMaterial__item">
+            <span>选择添加的资源类型：</span>
+            <el-checkbox-group v-model="checkboxGroup" style="margin:10px 0;"  >
+                <el-checkbox-button v-for="material in materials" :label="material" :key="material" @change="changeGroup" >{{material}}</el-checkbox-button>
+            </el-checkbox-group>
+         </div>
+        <!-- 课件资源 -->
+        <uploadComponent v-bind="coursewareData" :materialfileList.sync='coursewareData.materialfileList' ></uploadComponent>
+        <!-- 实验资源 -->
+        <!-- <uploadComponent :title="experimentData.title" :switchFlag="experimentData.switchFlag" :regx='experimentData.regx' :regxType='experimentData.regxType' :uploadFolder='experimentData.uploadFolder'></uploadComponent> -->
+        <uploadComponent v-bind="experimentData" :materialfileList.sync='experimentData.materialfileList' ></uploadComponent>
+        <!-- 视频资源 -->
+        <uploadComponent v-bind="videoData" :materialfileList.sync='videoData.materialfileList' ></uploadComponent>
+        <div class="buttonGroup">
+            <el-button type="primary" @click="submitFile">保存</el-button>
+            <el-button>重置</el-button>
+        </div>
+         
+      </template> 
+     
     </div>
   </div>
 </template>
 
 <script>
+import uploadComponent from "@/components/upload.vue";
 import _ from "lodash";
 import api from "../../util/api.js";
 export default {
   name: "addCourseMaterial",
+  components: {
+    uploadComponent
+  },
   data() {
     return {
       msg: "添加课程资料",
@@ -70,11 +64,35 @@ export default {
       ],
       checkboxGroup: [],
       // 课程资源
-      coursewareUploadUrl: "",
-      coursewareToken: "",
-      CoursewarefileList: [],
-      coursewareFlag: false
-      // 课程资源
+      coursewareData: {
+        title: "课件资源",
+        switchFlag: false,
+        regx: /^(?:application\/vnd.openxmlformats-officedocument.presentationml.presentation|application\/vnd.ms-powerpoint)$/i,
+        regxType: "PPT",
+        uploadFolder: "ppt/courseware",
+        materialfileList: [],
+        limitFlieNumber: 2
+      },
+      // 实验资源
+      experimentData: {
+        title: "实验资源",
+        switchFlag: false,
+        regx: /^(?:application\/msword|application\/pdf)$/i,
+        regxType: "word 或 PDF",
+        uploadFolder: "doc/experiment",
+        materialfileList: [],
+        limitFlieNumber: 2
+      },
+      // 视频资源
+      videoData: {
+        title: "视频资源",
+        switchFlag: false,
+        regx: /^(?:video\/mp4)$/i,
+        regxType: "MP4",
+        uploadFolder: "mp4/video",
+        materialfileList: [],
+        limitFlieNumber: 2
+      }
     };
   },
   created() {
@@ -87,66 +105,48 @@ export default {
     };
     api.findAllCourseByAuthor(data).then(res => {
       this.courseContent = res.data;
+      console.log(this.courseContent);
     });
   },
   methods: {
     changeGroup() {
       if (_.indexOf(this.checkboxGroup, "课件资源") >= 0) {
-        this.coursewareFlag = true;
+        this.coursewareData.switchFlag = true;
       } else {
-        this.coursewareFlag = false;
+        this.coursewareData.switchFlag = false;
+      }
+      if (_.indexOf(this.checkboxGroup, "实验资源") >= 0) {
+        this.experimentData.switchFlag = true;
+      } else {
+        this.experimentData.switchFlag = false;
+      }
+      if (_.indexOf(this.checkboxGroup, "视频资源") >= 0) {
+        this.videoData.switchFlag = true;
+      } else {
+        this.videoData.switchFlag = false;
       }
     },
-    // 课件资源
-    handleCoursewareSuccess(response, file, fileList) {
-      console.log(file, fileList.length);
-    },
-    handleCoursewareRemove(file, fileList) {
-      // console.log(file, fileList);
-    },
-    handleCoursewarePreview(file) {
-      console.log(file);
-    },
-    handleCoursewareExceed(files, fileList) {
-      this.$message.warning(
-        `当前限制选择 3 个文件，本次选择了 ${
-          files.length
-        } 个文件，共选择了 ${files.length + fileList.length} 个文件`
-      );
-    },
-    CoursewarebeforeRemove(file, fileList) {
-      // return this.$confirm(`确定移除 ${file.name}？`);
-      // 文件移除的时候触发的方法
-    },
-    beforeCoursewareUpload(file) {
-      // 当返回false就触发 :before-remove
-      // ====  组件配置  ====
-      const ispptType = /^(?:application\/vnd.openxmlformats-officedocument.presentationml.presentation|application\/vnd.ms-powerpoint)$/i.test(
-        file.type
-      );
-      if (!ispptType) {
-        // ====  组件配置  ====
-        this.$message.error(`课件仅支持 PPT 格式!`);
-        return false;
+    submitFile() {
+      if (
+        this.coursewareData.switchFlag &&
+        this.coursewareData.materialfileList.length > 0
+      ) {
+        this.$message.success("提交成功");
+        let coursewares = [];
+        this.coursewareData.materialfileList.forEach((value, index) => {
+          let data = {
+            course_id: this.value,
+            courseawre_url: value.response.key,
+            courseware_name: value.name
+          };
+          coursewares.push(data);
+        });
+        console.log(coursewares);
+        api.addCourseware(coursewares).then(res => {
+          console.log(res)
+        });
       }
-
-      // 获取文件后缀
-      let suffix = _.last(_.split(file.name, "."));
-      let params = {
-        suffix: suffix,
-        // ====  组件配置  ====
-        type: "ppt/course"
-      };
-      let that = this;
-      return api.getUploadToken(params).then(res => {
-        let result = res;
-        // ====  组件配置  ====
-        that.coursewareToken = result.data;
-        that.coursewareUploadUrl = result.upload_url;
-        return true;
-      });
     }
-    // 课程资源
   }
 };
 </script>
@@ -165,5 +165,12 @@ export default {
 }
 .coursewareShow {
   display: flex;
+}
+.buttonGroup {
+  // text-align: center;
+  // margin-top:100px;
+  position: absolute;
+  bottom: 100px;
+  left: 50%;
 }
 </style>

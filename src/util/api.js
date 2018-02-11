@@ -27,7 +27,7 @@ export default {
     },
     //获取作者全部课程
     findAllCourseByAuthor(params) {
-        return api.post('/course/findAllCourseByAuthor',params).then(res => res.data);
+        return api.post('/course/findAllCourseByAuthor', params).then(res => res.data);
     },
     // 删除课程
     deleteCourse(params) {
@@ -38,7 +38,11 @@ export default {
         return api.post('/course/updateCoursePublish', params).then(res => res.data)
     },
     //更新课程
-    updateCourse(params){
-        return api.post('/course/updateCourseDetail',params).then(res =>res.data)
+    updateCourse(params) {
+        return api.post('/course/updateCourseDetail', params).then(res => res.data)
+    },
+    // 添加课件资源
+    addCourseware(params) {
+        return api.post('/courseware/addCourseware', params).then(res => res.data)
     }
 }
