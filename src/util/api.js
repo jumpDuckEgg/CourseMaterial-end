@@ -44,5 +44,9 @@ export default {
     // 添加课件资源
     addCourseware(params) {
         return api.post('/courseware/addCourseware', params).then(res => res.data)
+    },
+    // 添加资源
+    addResources(params){
+      return api.post('/course/addResources',params).then(res => res.data)  
     }
 }

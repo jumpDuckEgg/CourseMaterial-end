@@ -29,9 +29,13 @@
         <uploadComponent v-bind="experimentData" :materialfileList.sync='experimentData.materialfileList' ></uploadComponent>
         <!-- 视频资源 -->
         <uploadComponent v-bind="videoData" :materialfileList.sync='videoData.materialfileList' ></uploadComponent>
+        <!-- 习题作业 -->
+        <uploadComponent v-bind="homeworkData" :materialfileList.sync='homeworkData.materialfileList' ></uploadComponent>
+        <!-- 模拟试题 -->
+        <uploadComponent v-bind="testData" :materialfileList.sync='testData.materialfileList' ></uploadComponent>
         <div class="buttonGroup">
-            <el-button type="primary" @click="submitFile">保存</el-button>
-            <el-button>重置</el-button>
+            <el-button type="primary" :loading="submintFlag" @click="submitFile">保存</el-button>
+            <el-button :loading="submintFlag" >重置</el-button>
         </div>
          
       </template> 
@@ -54,12 +58,13 @@ export default {
       msg: "添加课程资料",
       courseContent: [],
       value: "",
+      submintFlag:false,
       materials: [
         "课件资源",
         "实验资源",
-        "在线测试",
+        // "在线测试",
         "视频资源",
-        "习题和作业",
+        "习题作业",
         "模拟试题"
       ],
       checkboxGroup: [],
@@ -92,7 +97,28 @@ export default {
         uploadFolder: "mp4/video",
         materialfileList: [],
         limitFlieNumber: 2
+      },
+      // 习题作业
+      homeworkData: {
+        title: "习题作业",
+        switchFlag: false,
+        regx: /^(?:application\/msword|application\/pdf)$/i,
+        regxType: "word 或 PDF",
+        uploadFolder: "doc/homework",
+        materialfileList: [],
+        limitFlieNumber: 2
+      },
+      // 模拟试题
+      testData: {
+        title: "模拟试题",
+        switchFlag: false,
+        regx: /^(?:application\/msword|application\/pdf)$/i,
+        regxType: "word 或 PDF",
+        uploadFolder: "doc/test",
+        materialfileList: [],
+        limitFlieNumber: 2
       }
+      
     };
   },
   created() {
@@ -125,27 +151,114 @@ export default {
       } else {
         this.videoData.switchFlag = false;
       }
+      if (_.indexOf(this.checkboxGroup, "习题作业") >= 0) {
+        this.homeworkData.switchFlag = true;
+      } else {
+        this.homeworkData.switchFlag = false;
+      }
+      if (_.indexOf(this.checkboxGroup, "模拟试题") >= 0) {
+        this.testData.switchFlag = true;
+      } else {
+        this.testData.switchFlag = false;
+      }
     },
-    submitFile() {
+    submitFile() {  
+      // 总资源
+      let alldata = {};
+
+      // 课件资源
+      let coursewares = [];
       if (
         this.coursewareData.switchFlag &&
         this.coursewareData.materialfileList.length > 0
       ) {
-        this.$message.success("提交成功");
-        let coursewares = [];
         this.coursewareData.materialfileList.forEach((value, index) => {
           let data = {
             course_id: this.value,
-            courseawre_url: value.response.key,
+            courseware_url: value.response.key,
             courseware_name: value.name
           };
           coursewares.push(data);
         });
-        console.log(coursewares);
-        api.addCourseware(coursewares).then(res => {
-          console.log(res)
-        });
+        alldata['coursewares'] = coursewares;
       }
+      // 实验资源
+      let experiments = [];
+      if (
+        this.experimentData.switchFlag &&
+        this.experimentData.materialfileList.length > 0
+      ) {
+        this.experimentData.materialfileList.forEach((value, index) => {
+          let data = {
+            course_id: this.value,
+            experiment_url: value.response.key,
+            experiment_name: value.name
+          };
+          experiments.push(data);
+        });
+        alldata['experiments'] = experiments;
+      }
+      // 视频资源
+      let videos = [];
+      if (
+        this.videoData.switchFlag &&
+        this.videoData.materialfileList.length > 0
+      ) {
+        this.videoData.materialfileList.forEach((value, index) => {
+          let data = {
+            course_id: this.value,
+            video_url: value.response.key,
+            video_name: value.name
+          };
+          videos.push(data);
+        });
+         alldata['videos'] = videos;
+      }
+      // 习题作业
+      let homeworks = [];
+      if (
+        this.homeworkData.switchFlag &&
+        this.homeworkData.materialfileList.length > 0
+      ) { 
+        this.homeworkData.materialfileList.forEach((value, index) => {
+          let data = {
+            course_id: this.value,
+            homework_url: value.response.key,
+            homework_name: value.name
+          };
+          homeworks.push(data);
+        });
+         alldata['homeworks'] = homeworks;
+      }
+      // 模拟试题
+      let tests = [];
+      if (
+        this.testData.switchFlag &&
+        this.testData.materialfileList.length > 0
+      ) {
+        this.testData.materialfileList.forEach((value, index) => {
+          let data = {
+            course_id: this.value,
+            test_url: value.response.key,
+            test_name: value.name
+          };
+          tests.push(data);
+        });
+         alldata['tests'] = tests;
+      }
+      if(Object.keys(alldata).length == 0){
+        this.$message.warning("请选择一个文件才能上传");
+        return false;
+      }
+      this.submintFlag = true;
+      console.log(alldata)
+      api.addResources(alldata).then(res=>{
+        if(res.code == 12){
+          this.$message.success("添加资源成功");
+          this.submintFlag = false;
+        }
+        
+      })
     }
   }
 };
