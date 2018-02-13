@@ -48,5 +48,13 @@ export default {
     // 添加资源
     addResources(params){
       return api.post('/course/addResources',params).then(res => res.data)  
+    },
+    // 获取资源
+    findAllResources(params){
+        return api.post('/course/findallresource',params).then(res => res.data)  
+    },
+    // 删除资源
+    removeOneResource(params){
+        return api.post('/course/removeOneResource',params).then(res=>res.data)
     }
 }

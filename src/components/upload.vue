@@ -70,7 +70,6 @@ export default {
   methods: {
     // 课件资源
     handleMaterialSuccess(response, file, fileList) {
-      console.log(file, fileList.length);
       this.$emit("update:materialfileList", fileList);
     },
     handleMaterialRemove(file, fileList) {
@@ -78,7 +77,7 @@ export default {
       this.$emit("update:materialfileList", fileList);
     },
     handleMaterialPreview(file) {
-      console.log(file);
+      // console.log(file);
     },
     handleMaterialExceed(files, fileList) {
       this.$message.warning(
@@ -94,7 +93,6 @@ export default {
     beforeMaterialUpload(file) {
       // 当返回false就触发 :before-remove
       // ====  组件配置  ====
-      console.log(file.type)
       const ispptType = this.regx.test(file.type);
       if (!ispptType) {
         // ====  组件配置  ====

@@ -2,7 +2,6 @@
   <div class="addCourseMaterial">
     <h1>{{ msg }}</h1>
     <div class="courseMaterial">
-      <!-- <div>{{courseContent}}</div> -->
       <div class="courseMaterial__item">
         <span>选择一个课程：</span>
         <el-select v-model="value" placeholder="请选择">
@@ -14,10 +13,9 @@
           </el-option>
         </el-select>
       </div>
-      <!-- <template v-if="value"> -->
-        <template v-if="true">
+      <template v-if="value">
          <div class="courseMaterial__item">
-            <span>选择添加的资源类型：</span>
+            <span>选择添加的资源类型：</span> 
             <el-checkbox-group v-model="checkboxGroup" style="margin:10px 0;"  >
                 <el-checkbox-button v-for="material in materials" :label="material" :key="material" @change="changeGroup" >{{material}}</el-checkbox-button>
             </el-checkbox-group>
@@ -25,7 +23,6 @@
         <!-- 课件资源 -->
         <uploadComponent v-bind="coursewareData" :materialfileList.sync='coursewareData.materialfileList' ></uploadComponent>
         <!-- 实验资源 -->
-        <!-- <uploadComponent :title="experimentData.title" :switchFlag="experimentData.switchFlag" :regx='experimentData.regx' :regxType='experimentData.regxType' :uploadFolder='experimentData.uploadFolder'></uploadComponent> -->
         <uploadComponent v-bind="experimentData" :materialfileList.sync='experimentData.materialfileList' ></uploadComponent>
         <!-- 视频资源 -->
         <uploadComponent v-bind="videoData" :materialfileList.sync='videoData.materialfileList' ></uploadComponent>
@@ -34,8 +31,8 @@
         <!-- 模拟试题 -->
         <uploadComponent v-bind="testData" :materialfileList.sync='testData.materialfileList' ></uploadComponent>
         <div class="buttonGroup">
-            <el-button type="primary" :loading="submintFlag" @click="submitFile">保存</el-button>
-            <el-button :loading="submintFlag" >重置</el-button>
+            <el-button type="primary" :loading="submintFlag" :disabled="disabledFlag" @click="submitFile">上传</el-button>
+            <el-button :loading="submintFlag" @click="resetUpload">重置</el-button>
         </div>
          
       </template> 
@@ -58,7 +55,8 @@ export default {
       msg: "添加课程资料",
       courseContent: [],
       value: "",
-      submintFlag:false,
+      submintFlag: false,
+      disabledFlag: false,
       materials: [
         "课件资源",
         "实验资源",
@@ -118,7 +116,6 @@ export default {
         materialfileList: [],
         limitFlieNumber: 2
       }
-      
     };
   },
   created() {
@@ -131,7 +128,6 @@ export default {
     };
     api.findAllCourseByAuthor(data).then(res => {
       this.courseContent = res.data;
-      console.log(this.courseContent);
     });
   },
   methods: {
@@ -139,30 +135,35 @@ export default {
       if (_.indexOf(this.checkboxGroup, "课件资源") >= 0) {
         this.coursewareData.switchFlag = true;
       } else {
+        this.coursewareData.materialfileList = [];
         this.coursewareData.switchFlag = false;
       }
       if (_.indexOf(this.checkboxGroup, "实验资源") >= 0) {
         this.experimentData.switchFlag = true;
       } else {
+        this.experimentData.materialfileList = [];
         this.experimentData.switchFlag = false;
       }
       if (_.indexOf(this.checkboxGroup, "视频资源") >= 0) {
         this.videoData.switchFlag = true;
       } else {
+        this.videoData.materialfileList = [];
         this.videoData.switchFlag = false;
       }
       if (_.indexOf(this.checkboxGroup, "习题作业") >= 0) {
         this.homeworkData.switchFlag = true;
       } else {
+        this.homeworkData.materialfileList = [];
         this.homeworkData.switchFlag = false;
       }
       if (_.indexOf(this.checkboxGroup, "模拟试题") >= 0) {
         this.testData.switchFlag = true;
       } else {
+        this.testData.materialfileList = [];
         this.testData.switchFlag = false;
       }
     },
-    submitFile() {  
+    submitFile() {
       // 总资源
       let alldata = {};
 
@@ -180,7 +181,7 @@ export default {
           };
           coursewares.push(data);
         });
-        alldata['coursewares'] = coursewares;
+        alldata["coursewares"] = coursewares;
       }
       // 实验资源
       let experiments = [];
@@ -196,7 +197,7 @@ export default {
           };
           experiments.push(data);
         });
-        alldata['experiments'] = experiments;
+        alldata["experiments"] = experiments;
       }
       // 视频资源
       let videos = [];
@@ -212,14 +213,14 @@ export default {
           };
           videos.push(data);
         });
-         alldata['videos'] = videos;
+        alldata["videos"] = videos;
       }
       // 习题作业
       let homeworks = [];
       if (
         this.homeworkData.switchFlag &&
         this.homeworkData.materialfileList.length > 0
-      ) { 
+      ) {
         this.homeworkData.materialfileList.forEach((value, index) => {
           let data = {
             course_id: this.value,
@@ -228,7 +229,7 @@ export default {
           };
           homeworks.push(data);
         });
-         alldata['homeworks'] = homeworks;
+        alldata["homeworks"] = homeworks;
       }
       // 模拟试题
       let tests = [];
@@ -244,21 +245,32 @@ export default {
           };
           tests.push(data);
         });
-         alldata['tests'] = tests;
+        alldata["tests"] = tests;
       }
-      if(Object.keys(alldata).length == 0){
+      if (Object.keys(alldata).length == 0) {
         this.$message.warning("请选择一个文件才能上传");
         return false;
       }
       this.submintFlag = true;
-      console.log(alldata)
-      api.addResources(alldata).then(res=>{
-        if(res.code == 12){
+      console.log(alldata);
+      api.addResources(alldata).then(res => {
+        if (res.code == 12) {
           this.$message.success("添加资源成功");
+          this.coursewareData.materialfileList = [];
+          this.experimentData.materialfileList = [];
+          this.videoData.materialfileList = [];
+          this.homeworkData.materialfileList = [];
+          this.testData.materialfileList = [];
           this.submintFlag = false;
         }
-        
-      })
+      });
+    },
+    resetUpload() {
+      this.coursewareData.materialfileList = [];
+      this.experimentData.materialfileList = [];
+      this.videoData.materialfileList = [];
+      this.homeworkData.materialfileList = [];
+      this.testData.materialfileList = [];
     }
   }
 };

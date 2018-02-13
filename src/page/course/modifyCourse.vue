@@ -117,8 +117,6 @@
             <span slot="footer" class="dialog-footer">
                   <el-button type="primary" @click="submitCourse" :disabled="disabledFlag" :loading="submintFlag">提交</el-button>
                   <el-button :loading="submintFlag" :disabled="disabledFlag"  @click="resetContent">重置</el-button>
-                <!-- <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogVisible = false">确 定</el-button> -->
             </span>
         </el-dialog>
     </div>

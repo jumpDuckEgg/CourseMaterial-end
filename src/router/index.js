@@ -55,7 +55,11 @@ const AddCourseMaterial = resolve =>{
     resolve(require('@/page/course/addCourseMaterial.vue'))
   })
 }
-
+const ModifyCourseMaterial = resolve =>{
+  require.ensure(['@/page/course/modifyCourseMaterial.vue'],()=>{
+    resolve(require('@/page/course/modifyCourseMaterial.vue'))
+  })
+}
 const router = new Router({
   mode: 'history',
   routes: [
@@ -107,6 +111,14 @@ const router = new Router({
               meta: {
                 requiresAuth: true
               },
+            },
+            {
+              path:'modifyCourseMaterial',
+              name:'modifyCourseMaterial',
+              component:ModifyCourseMaterial,
+              meta : {
+                requiresAuth:true
+              }
             }
           ]
         }

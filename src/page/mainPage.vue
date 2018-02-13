@@ -35,10 +35,11 @@
                     </el-menu-item-group>
                     <el-menu-item-group title="分组2">
                       <el-menu-item index="1-4" @click="tolink('/course/addCourseMaterial')">添加课程资料</el-menu-item>
+                      <el-menu-item index="1-5" @click="tolink('/course/modifyCourseMaterial')">修改课程资料</el-menu-item>
                     </el-menu-item-group>
-                    <el-submenu index="1-5">
+                    <el-submenu index="1-6">
                       <template slot="title">选项4</template>
-                      <el-menu-item index="1-5-1">选项1</el-menu-item>
+                      <el-menu-item index="1-6-1">选项1</el-menu-item>
                     </el-submenu>
                   </el-submenu>
                   <el-menu-item index="2">
