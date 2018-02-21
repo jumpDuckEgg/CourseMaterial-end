@@ -9,7 +9,7 @@
         <el-form-item label="课程描述:" prop="description">
             <el-input type="textarea"  :rows="4" v-model="form.description"></el-input>
         </el-form-item>
-        <el-form-item label="头像上传:" required> 
+        <el-form-item label="课程图片上传:" required> 
             <el-upload
               name='file' 
               :action="imageUploadUrl" 
@@ -174,7 +174,8 @@ export default {
       this.$message.warning(`当前限制选择 1 个文件`);
     },
     checkOptions(file) {
-      const isDocImage = /^(?:application\/msword|application\/pdf)$/i.test(
+      console.log(file.type);
+      const isDocImage = /^(?:application\/msword|application\/pdf|application\/vnd.openxmlformats-officedocument.wordprocessingml.document)$/i.test(
         file.type
       );
       if (!isDocImage) {

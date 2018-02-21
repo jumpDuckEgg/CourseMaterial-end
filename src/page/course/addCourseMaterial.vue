@@ -21,18 +21,18 @@
             </el-checkbox-group>
          </div>
         <!-- 课件资源 -->
-        <uploadComponent v-bind="coursewareData" :materialfileList.sync='coursewareData.materialfileList' ></uploadComponent>
+        <uploadComponent v-bind="coursewareData" :materialfileList.sync='coursewareData.materialfileList'  :buttonFlag.sync='coursewareData.buttonFlag'></uploadComponent>
         <!-- 实验资源 -->
-        <uploadComponent v-bind="experimentData" :materialfileList.sync='experimentData.materialfileList' ></uploadComponent>
+        <uploadComponent v-bind="experimentData" :materialfileList.sync='experimentData.materialfileList' :buttonFlag.sync='experimentData.buttonFlag' ></uploadComponent>
         <!-- 视频资源 -->
-        <uploadComponent v-bind="videoData" :materialfileList.sync='videoData.materialfileList' ></uploadComponent>
+        <uploadComponent v-bind="videoData" :materialfileList.sync='videoData.materialfileList' :buttonFlag.sync='videoData.buttonFlag'></uploadComponent>
         <!-- 习题作业 -->
-        <uploadComponent v-bind="homeworkData" :materialfileList.sync='homeworkData.materialfileList' ></uploadComponent>
+        <uploadComponent v-bind="homeworkData" :materialfileList.sync='homeworkData.materialfileList' :buttonFlag.sync='homeworkData.buttonFlag'></uploadComponent>
         <!-- 模拟试题 -->
-        <uploadComponent v-bind="testData" :materialfileList.sync='testData.materialfileList' ></uploadComponent>
+        <uploadComponent v-bind="testData" :materialfileList.sync='testData.materialfileList' :buttonFlag.sync='testData.buttonFlag' ></uploadComponent>
         <div class="buttonGroup">
-            <el-button type="primary" :loading="submintFlag" :disabled="disabledFlag" @click="submitFile">上传</el-button>
-            <el-button :loading="submintFlag" @click="resetUpload">重置</el-button>
+            <el-button type="primary" :loading="submintFlag" :disabled="videoData.buttonFlag||coursewareData.buttonFlag||experimentData.buttonFlag||homeworkData.buttonFlag||testData.buttonFlag" @click="submitFile">上传</el-button>
+            <el-button :loading="submintFlag"  :disabled="videoData.buttonFlag||coursewareData.buttonFlag||experimentData.buttonFlag||homeworkData.buttonFlag||testData.buttonFlag"   @click="resetUpload">重置</el-button>
         </div>
          
       </template> 
@@ -74,17 +74,19 @@ export default {
         regxType: "PPT",
         uploadFolder: "ppt/courseware",
         materialfileList: [],
-        limitFlieNumber: 2
+        limitFlieNumber: 2,
+        buttonFlag:false
       },
       // 实验资源
       experimentData: {
         title: "实验资源",
         switchFlag: false,
-        regx: /^(?:application\/msword|application\/pdf)$/i,
+        regx: /^(?:application\/msword|application\/pdf|application\/vnd.openxmlformats-officedocument.wordprocessingml.document)$/i,
         regxType: "word 或 PDF",
         uploadFolder: "doc/experiment",
         materialfileList: [],
-        limitFlieNumber: 2
+        limitFlieNumber: 2,
+        buttonFlag:false
       },
       // 视频资源
       videoData: {
@@ -94,27 +96,30 @@ export default {
         regxType: "MP4",
         uploadFolder: "mp4/video",
         materialfileList: [],
-        limitFlieNumber: 2
+        limitFlieNumber: 2,
+        buttonFlag:false
       },
       // 习题作业
       homeworkData: {
         title: "习题作业",
         switchFlag: false,
-        regx: /^(?:application\/msword|application\/pdf)$/i,
+        regx: /^(?:application\/msword|application\/pdf|application\/vnd.openxmlformats-officedocument.wordprocessingml.document)$/i,
         regxType: "word 或 PDF",
         uploadFolder: "doc/homework",
         materialfileList: [],
-        limitFlieNumber: 2
+        limitFlieNumber: 2,
+        buttonFlag:false
       },
       // 模拟试题
       testData: {
         title: "模拟试题",
         switchFlag: false,
-        regx: /^(?:application\/msword|application\/pdf)$/i,
+        regx: /^(?:application\/msword|application\/pdf|application\/vnd.openxmlformats-officedocument.wordprocessingml.document)$/i,
         regxType: "word 或 PDF",
         uploadFolder: "doc/test",
         materialfileList: [],
-        limitFlieNumber: 2
+        limitFlieNumber: 2,
+        buttonFlag:false
       }
     };
   },
@@ -292,10 +297,7 @@ export default {
   display: flex;
 }
 .buttonGroup {
-  // text-align: center;
-  // margin-top:100px;
-  position: absolute;
-  bottom: 100px;
-  left: 50%;
+  text-align: center;
+  margin-top:100px;
 }
 </style>

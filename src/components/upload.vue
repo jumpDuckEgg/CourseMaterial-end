@@ -17,6 +17,7 @@
             :file-list="materialfileList"
             :before-upload="beforeMaterialUpload"
             :on-exceed="handleMaterialExceed"
+            :on-progress="handleProgress"
             >
             <el-button size="small" type="primary">点击上传</el-button>
             <!-- <div slot="tip" class="el-upload__tip">只能上传ppt文件，且不超过500kb</div> -->
@@ -59,6 +60,10 @@ export default {
     limitFlieNumber:{
         type:Number,
         default:3
+    },
+    buttonFlag:{
+      type:Boolean,
+      default:false
     }
   },
   data() {
@@ -68,13 +73,20 @@ export default {
     };
   },
   methods: {
+    handleProgress() {
+      console.log("我在上传了");
+
+      this.$emit("update:buttonFlag", true);
+    },
     // 课件资源
     handleMaterialSuccess(response, file, fileList) {
       this.$emit("update:materialfileList", fileList);
+      this.$emit("update:buttonFlag", false);
     },
     handleMaterialRemove(file, fileList) {
       // console.log(file, fileList);
       this.$emit("update:materialfileList", fileList);
+      this.$emit("update:buttonFlag", false);
     },
     handleMaterialPreview(file) {
       // console.log(file);

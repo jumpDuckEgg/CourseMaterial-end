@@ -131,9 +131,10 @@ export default {
   },
   watch: {
     value: function(newValue, oldValue) {
+
       let data = {
         query: {
-          course_id: this.value
+          course_id: newValue
         }
       };
       api.findAllResources(data).then(res => {
@@ -141,18 +142,28 @@ export default {
           let result = res.data;
           if (result.coursewares) {
             this.coursewares = result.coursewares;
+          }else{
+            this.coursewares = [];
           }
           if (result.experiments) {
             this.experiments = result.experiments;
+          }else{
+            this.experiments = [];
           }
           if (result.tests) {
             this.tests = result.tests;
+          }else{
+            this.tests = [];
           }
           if (result.videos) {
             this.videos = result.videos;
+          }else{
+            this.videos = []
           }
           if (result.homeworks) {
             this.homeworks = result.homeworks;
+          }else{
+            this.homeworks = []
           }
         }
       });
@@ -163,7 +174,6 @@ export default {
       window.location.href = url;
     },
     removeResource(data) {
-      console.log(data);
       api.removeOneResource(data).then(res => {
         if (res.code == 14) {
           let data = {

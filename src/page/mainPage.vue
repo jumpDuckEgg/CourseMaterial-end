@@ -20,7 +20,7 @@
         <el-container>
           <el-aside width="210px">
                 <el-menu
-                  default-active="2"
+                  default-active="1"
                   >
                   <el-submenu index="1">
                     <template slot="title">
@@ -36,10 +36,11 @@
                     <el-menu-item-group title="分组2">
                       <el-menu-item index="1-4" @click="tolink('/course/addCourseMaterial')">添加课程资料</el-menu-item>
                       <el-menu-item index="1-5" @click="tolink('/course/modifyCourseMaterial')">修改课程资料</el-menu-item>
+                      <el-menu-item index="1-6" @click="tolink('/course/addOnlineTest')">添加在线测试</el-menu-item>
                     </el-menu-item-group>
-                    <el-submenu index="1-6">
+                    <el-submenu index="1-7">
                       <template slot="title">选项4</template>
-                      <el-menu-item index="1-6-1">选项1</el-menu-item>
+                      <el-menu-item index="1-7-1">选项1</el-menu-item>
                     </el-submenu>
                   </el-submenu>
                   <el-menu-item index="2">
