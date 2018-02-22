@@ -131,7 +131,6 @@ export default {
   },
   watch: {
     value: function(newValue, oldValue) {
-
       let data = {
         query: {
           course_id: newValue
@@ -142,28 +141,28 @@ export default {
           let result = res.data;
           if (result.coursewares) {
             this.coursewares = result.coursewares;
-          }else{
+          } else {
             this.coursewares = [];
           }
           if (result.experiments) {
             this.experiments = result.experiments;
-          }else{
+          } else {
             this.experiments = [];
           }
           if (result.tests) {
             this.tests = result.tests;
-          }else{
+          } else {
             this.tests = [];
           }
           if (result.videos) {
             this.videos = result.videos;
-          }else{
-            this.videos = []
+          } else {
+            this.videos = [];
           }
           if (result.homeworks) {
             this.homeworks = result.homeworks;
-          }else{
-            this.homeworks = []
+          } else {
+            this.homeworks = [];
           }
         }
       });
@@ -199,9 +198,9 @@ export default {
               if (result.homeworks) {
                 this.homeworks = result.homeworks;
               }
+              this.$message.success(res.message);
             }
           });
-          this.$message.success('删除成功');
         }
       });
     }

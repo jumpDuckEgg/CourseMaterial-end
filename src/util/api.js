@@ -46,15 +46,33 @@ export default {
         return api.post('/courseware/addCourseware', params).then(res => res.data)
     },
     // 添加资源
-    addResources(params){
-      return api.post('/course/addResources',params).then(res => res.data)  
+    addResources(params) {
+        return api.post('/course/addResources', params).then(res => res.data)
     },
     // 获取资源
-    findAllResources(params){
-        return api.post('/course/findallresource',params).then(res => res.data)  
+    findAllResources(params) {
+        return api.post('/course/findallresource', params).then(res => res.data)
     },
     // 删除资源
-    removeOneResource(params){
-        return api.post('/course/removeOneResource',params).then(res=>res.data)
+    removeOneResource(params) {
+        return api.post('/course/removeOneResource', params).then(res => res.data)
+    },
+    // 添加在线测试
+    addOnlineTest(params) {
+        return api.post('/onlineTest/addonlineTest', params).then(res => res.data)
+    },
+    // 查找在线测试通过课程ID
+    findOnlineTest(params) {
+        return api.post('/onlineTest/findAllonlineTest', params).then(res => res.data)
+    },
+    // 发布或下线在线测试
+    publishOnlineTest(params) {
+        return api.post('/onlineTest/publishOnlineTest', params).then(res => res.data)
+    },
+    // 删除在线测试
+    removeOnlineTest(params) {
+        return api.post('/onlineTest/removeOnlineTest', params).then(res => res.data)
     }
+
+
 }

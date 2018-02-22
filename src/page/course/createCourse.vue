@@ -2,7 +2,7 @@
   <div class="createCourse">
     <h1>{{ msg }}</h1>
     <br>
-    <el-form ref="form" :model="form" :rules="rules" label-width="100px" @submit.native.prevent>
+    <el-form ref="form" :model="form" :rules="rules" label-width="120px" @submit.native.prevent>
         <el-form-item label="课程名称:" prop="name">
             <el-input v-model="form.name" ></el-input>
         </el-form-item>

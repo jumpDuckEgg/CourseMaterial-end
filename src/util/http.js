@@ -46,7 +46,7 @@ instance.interceptors.response.use(
                         message:'登录信息已过期，请重新登录'
                     });
                     router.replace({ //跳转到登录页面
-                        path: 'login',
+                        path: '/login',
                         query: { redirect: router.currentRoute.fullPath } // 将跳转的路由path作为参数，登录成功后跳转到该路由
                     });
             }

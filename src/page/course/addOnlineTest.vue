@@ -15,13 +15,13 @@
       </div>
       <div class="courseMaterial__item" v-if="value" >
         <div  class="courseMaterial__item-title">测试名称：<el-input class="courseMaterial__item-input" v-model="title"></el-input> </div>
-        <div><el-button @click="addNewSubjectFun">添加选择题</el-button></div>
+        <div><el-button @click="addNewSubjectFun()">添加选择题</el-button></div>
         <el-card class="box" v-for="(item,index) in question" :key="index">
-            <el-form ref="form"  label-width="100px">
+            <el-form ref="form"   label-width="100px">
               <el-form-item label="选题：">
                 <el-button type="text" @click="deleteSubjectFun(index)" >删除选题</el-button>
               </el-form-item>
-              <el-form-item label="标题：" required >
+              <el-form-item label="标题：" prop="name" >
                 <el-input placeholder="未填写"  v-model="item.title"></el-input>
               </el-form-item>
               <el-form-item label="正确答案：">
@@ -75,8 +75,7 @@ export default {
             }
           ]
         }
-      ],
-      
+      ]
     };
   },
   created() {
@@ -97,9 +96,9 @@ export default {
       this.question.splice(index, 1);
     },
     // 新增选题
-    addNewSubjectFun: function(index) {
-      var subjectDataMes = {};
-      subjectDataMes.id = index + 2;
+    addNewSubjectFun: function() {
+      let subjectDataMes = {};
+      subjectDataMes.id = this.question.length+1;
       subjectDataMes.title = "";
       subjectDataMes.answer = "";
       subjectDataMes.score = 10;
@@ -143,9 +142,31 @@ export default {
         this.$message.error("测试名称不能为空");
         return false;
       }
-      console.log(this.question)
-      
-      
+      let data = {
+        title: this.title,
+        course_id: this.value,
+        question: this.question
+      };
+      api.addOnlineTest(data).then(res => {
+        if (res.code == 15) {
+          this.$message.success(res.message);
+          this.title = "";
+          this.question = [
+            {
+              id: 1,
+              title: "",
+              answer: "",
+              score: 10,
+              optionsData: [
+                {
+                  id: "A",
+                  options: ""
+                }
+              ]
+            }
+          ];
+        }
+      });
     }
   }
 };
