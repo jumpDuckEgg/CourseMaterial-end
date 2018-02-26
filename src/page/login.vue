@@ -1,20 +1,20 @@
 <template>
-  <el-card class="login">
-    <div class="login__icon"><img src="../../static/egg.png" alt=""></div>
-    <div class="login__title">网络应用技术资源库</div>
-    <el-form ref="form" :model="form" :rules="rules" label-width="70px" status-icon class="login__form">
-      <el-form-item label="用户名" prop='username'>
-        <el-input v-model="form.username"></el-input>
-      </el-form-item>
-      <el-form-item label="密码" prop='password'>
-        <el-input type="password" v-model="form.password" @keyup.enter.native="onSubmit('form')"></el-input>
-      </el-form-item>
-      <div class="login__button">
-        <el-button type="primary" @click="onSubmit('form')">登陆</el-button>
-        <el-button @click="resetForm('form')">取消</el-button>
-      </div>
-    </el-form>
-  </el-card>
+    <el-card class="login">
+        <div class="login__icon"><img src="../../static/egg.png" alt=""></div>
+        <div class="login__title">网络应用技术资源库</div>
+        <el-form ref="form" :model="form" :rules="rules" label-width="70px" status-icon class="login__form">
+            <el-form-item label="用户名" prop='username'>
+                <el-input v-model="form.username"></el-input>
+            </el-form-item>
+            <el-form-item label="密码" prop='password'>
+                <el-input type="password" v-model="form.password" @keyup.enter.native="onSubmit('form')"></el-input>
+            </el-form-item>
+            <div class="login__button">
+                <el-button type="primary" @click="onSubmit('form')">登陆</el-button>
+                <el-button @click="resetForm('form')">取消</el-button>
+            </div>
+        </el-form>
+    </el-card>
 </template>
 
 <script>
@@ -58,12 +58,7 @@ export default {
                                 type: "success",
                                 message: result.message
                             });
-                            let token = result.data.token;
-                            let username = result.data.username;
-                            let data = {
-                                token: token,
-                                username: username
-                            };
+                            let data = result.data;
                             this.$store.dispatch("UserLogin", data);
                             let redirectUrl = decodeURIComponent(
                                 this.$route.query.redirect || "/"

@@ -72,6 +72,18 @@ export default {
     // 删除在线测试
     removeOnlineTest(params) {
         return api.post('/onlineTest/removeOnlineTest', params).then(res => res.data)
+    },
+    // 获取全部评论
+    getAllComment() {
+        return api.get('/comment/getAllComment').then(res => res.data)
+    },
+    // 评论上下线
+    modifyCommentPublish(params) {
+        return api.post('/comment/modifyCommentPublish', params).then(res => res.data);
+    },
+    // 删除评论
+    deleteComment(params) {
+        return api.post('/comment/deleteComment', params).then(res => res.data);
     }
 
 

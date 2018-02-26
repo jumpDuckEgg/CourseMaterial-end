@@ -46,31 +46,38 @@ const ModifyCourse = resolve => {
   })
 }
 const ExamineCourse = resolve => {
-  require.ensure(['@/page/course/examineCourse.vue'],()=>{
+  require.ensure(['@/page/course/examineCourse.vue'], () => {
     resolve(require('@/page/course/examineCourse.vue'))
   })
 }
-const AddCourseMaterial = resolve =>{
-  require.ensure(['@/page/course/addCourseMaterial.vue'],()=>{
+const AddCourseMaterial = resolve => {
+  require.ensure(['@/page/course/addCourseMaterial.vue'], () => {
     resolve(require('@/page/course/addCourseMaterial.vue'))
   })
 }
-const ModifyCourseMaterial = resolve =>{
-  require.ensure(['@/page/course/modifyCourseMaterial.vue'],()=>{
+const ModifyCourseMaterial = resolve => {
+  require.ensure(['@/page/course/modifyCourseMaterial.vue'], () => {
     resolve(require('@/page/course/modifyCourseMaterial.vue'))
   })
 }
-const AddOnlineTest = resolve =>{
-  require.ensure(['@/page/course/addOnlineTest.vue'],()=>{
+const AddOnlineTest = resolve => {
+  require.ensure(['@/page/course/addOnlineTest.vue'], () => {
     resolve(require('@/page/course/addOnlineTest.vue'))
   })
 }
 
-const ModifyOnlineTest = resolve =>{
-  require.ensure(['@/page/course/modifyOnlineTest.vue'],()=>{
+const ModifyOnlineTest = resolve => {
+  require.ensure(['@/page/course/modifyOnlineTest.vue'], () => {
     resolve(require('@/page/course/modifyOnlineTest.vue'))
   })
 }
+
+const CommentManager = resolve => {
+  require.ensure(['@/page/course/commentManager.vue'], () => {
+    resolve(require('@/page/course/commentManager.vue'))
+  })
+}
+
 
 
 const router = new Router({
@@ -87,11 +94,14 @@ const router = new Router({
           path: 'user',
           name: 'userInformation',
           component: UserInformation,
+          meta: {
+            requiresAuth: true
+          },
         },
         {
           path: 'course',
           component: CourseIndex,
-          
+
           children: [
             {
               path: 'createcourse',
@@ -126,31 +136,40 @@ const router = new Router({
               },
             },
             {
-              path:'modifyCourseMaterial',
-              name:'modifyCourseMaterial',
-              component:ModifyCourseMaterial,
-              meta : {
-                requiresAuth:true
+              path: 'modifyCourseMaterial',
+              name: 'modifyCourseMaterial',
+              component: ModifyCourseMaterial,
+              meta: {
+                requiresAuth: true
               }
             },
             {
-              path:'addOnlineTest',
-              name:'addOnlineTest',
-              component:AddOnlineTest,
-              meta : {
-                requiresAuth:true
+              path: 'addOnlineTest',
+              name: 'addOnlineTest',
+              component: AddOnlineTest,
+              meta: {
+                requiresAuth: true
               }
             },
             {
-              path:'modifyOnlineTest',
-              name:'modifyOnlineTest',
-              component:ModifyOnlineTest,
-              meta : {
-                requiresAuth:true
+              path: 'modifyOnlineTest',
+              name: 'modifyOnlineTest',
+              component: ModifyOnlineTest,
+              meta: {
+                requiresAuth: true
               }
             }
           ]
+        },
+        {
+          path: 'commentManager',
+          name: 'commentManager',
+          component: CommentManager,
+          meta: {
+            requiresAuth: true
+          }
         }
+
 
       ]
     }, {

@@ -178,7 +178,8 @@ export default {
             let suffix = _.last(_.split(file.name, "."));
             let params = {
                 suffix: suffix,
-                type: "doc/course"
+                type: "doc/course",
+                username:''
             };
             let that = this;
             return api.getUploadToken(params).then(res => {
