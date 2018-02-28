@@ -19,7 +19,7 @@
       </el-header>
       <el-container>
         <el-aside width="210px">
-          <el-menu default-active="1">
+          <el-menu default-active="5">
             <el-submenu index="1">
               <template slot="title">
                 <i class="el-icon-location"></i>
@@ -42,7 +42,7 @@
             </el-submenu>
             <el-menu-item index="2" @click="tolink('/commentManager')">
               <i class="el-icon-menu"></i>
-              <span slot="title">评论管理</span>
+              <span slot="title">评价管理</span>
             </el-menu-item>
 
             <el-submenu index="3">
@@ -66,6 +66,14 @@
                 <el-menu-item index="4-2" @click="tolink('/course/modifyOnlineTest')">修改在线测试</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
+            <el-menu-item index="5" @click="tolink('/')">
+              <i class="el-icon-tickets"></i>
+              <span slot="title">个人中心</span>
+            </el-menu-item>
+            <el-menu-item index="6" @click="tolink('/course/personComment')">
+              <i class="el-icon-menu"></i>
+              <span slot="title">个人评论</span>
+            </el-menu-item>
           </el-menu>
         </el-aside>
         <el-main>
@@ -80,7 +88,9 @@
 export default {
     name: "mainPage",
     data() {
-        return {};
+        return {
+
+        };
     },
     methods: {
         logout() {

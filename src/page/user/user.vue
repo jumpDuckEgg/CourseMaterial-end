@@ -18,7 +18,7 @@
       </el-table-column>
       <el-table-column label="用户类型" width="150">
           <template slot-scope="scope">
-              {{scope.row.userType}}
+              {{getUserType(scope.row.userType)}}
           </template>
         </el-table-column>
       <el-table-column label="用户头像" width="150">
@@ -54,6 +54,20 @@ export default {
       }
       this.userInfo = result.data;
     });
+  },
+  methods:{
+    getUserType(type){
+      switch (type) {
+        case 0:
+          return "学生"
+          break;
+       case 1:
+          return "教师"
+          break;
+        default:
+          break;
+      }
+    }
   }
 };
 </script>

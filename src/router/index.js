@@ -78,7 +78,17 @@ const CommentManager = resolve => {
   })
 }
 
+const PersonCenter = resolve => {
+  require.ensure(['@/page/user/personCenter.vue'], () => {
+    resolve(require('@/page/user/personCenter.vue'))
+  })
+}
 
+const PersonComment = resolve => {
+  require.ensure(['@/page/course/personComment.vue'], () => {
+    resolve(require('@/page/course/personComment.vue'))
+  })
+}
 
 const router = new Router({
   mode: 'history',
@@ -90,6 +100,14 @@ const router = new Router({
         requiresAuth: true
       },
       children: [
+        {
+          path: '',
+          name: 'personCenter',
+          component: PersonCenter,
+          meta: {
+            requiresAuth: true
+          },
+        },
         {
           path: 'user',
           name: 'userInformation',
@@ -155,6 +173,14 @@ const router = new Router({
               path: 'modifyOnlineTest',
               name: 'modifyOnlineTest',
               component: ModifyOnlineTest,
+              meta: {
+                requiresAuth: true
+              }
+            },
+            {
+              path: 'personComment',
+              name: 'personComment',
+              component: PersonComment,
               meta: {
                 requiresAuth: true
               }

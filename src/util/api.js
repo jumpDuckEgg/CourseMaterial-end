@@ -77,6 +77,10 @@ export default {
     getAllComment() {
         return api.get('/comment/getAllComment').then(res => res.data)
     },
+    // 获取全部评论通过ID
+    getAllCommentById(params) {
+        return api.post('/comment/getAllCommentById',params).then(res => res.data)
+    },
     // 评论上下线
     modifyCommentPublish(params) {
         return api.post('/comment/modifyCommentPublish', params).then(res => res.data);
