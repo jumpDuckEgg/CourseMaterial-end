@@ -1,5 +1,6 @@
 <template>
     <el-card class="login">
+        <div class="registerBtn"><el-button @click="tolink('/register')">注册</el-button></div>
         <div class="login__icon"><img src="../../static/egg.png" alt=""></div>
         <div class="login__title">网络应用技术资源库</div>
         <el-form ref="form" :model="form" :rules="rules" label-width="70px" status-icon class="login__form">
@@ -38,6 +39,9 @@ export default {
         };
     },
     methods: {
+        tolink(url){
+            this.$router.push(url);
+        },
         onSubmit(formName) {
             // this.$router.push("/");
             this.$refs[formName].validate(valid => {
@@ -108,5 +112,10 @@ export default {
     &__button {
         text-align: center;
     }
+}
+.registerBtn{
+    position: absolute;
+    right: 5px;
+    top: 5px;
 }
 </style>

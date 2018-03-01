@@ -46,7 +46,7 @@ export default {
     name: "personComment",
     data() {
         return {
-            msg: "个人评价",
+            msg: "个人评价11111",
             comments: []
         };
     },

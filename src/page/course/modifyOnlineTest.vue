@@ -1,96 +1,96 @@
 <template>
-  <div class="modifyOnlineTest">
-    <h1>{{ msg }}</h1>
-    <div class="courseMaterial">
-      <div class="courseMaterial__item">
-        <span>选择一个课程：</span>
-        <el-select v-model="value" placeholder="请选择">
-          <el-option v-for="item in courseContent" :key="item.course_name" :label="item.course_name" :value="item.course_id">
-          </el-option>
-        </el-select>
-      </div>
-      <div class="courseMaterial__item">
-        <el-table :data="tableData" border style="width: 90%">
-          <el-table-column prop="onlineTest_id" label="测试ID" width="100">
-          </el-table-column>
-          <el-table-column prop="onlineTest_title" label="测试名称" width="180">
-          </el-table-column>
-          <el-table-column label="状态" width="120">
-            <template slot-scope="scope">
-              <el-tag :type="publishStatusType(scope.row.onlineTest_publish)">{{publishStatus(scope.row.onlineTest_publish)}}</el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column label="详情" width="180">
-            <template slot-scope="scope">
-              <el-button type="success" @click="checkChoice(scope.row)">查看</el-button>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作">
-            <template slot-scope="scope">
-              <el-button plain @click="modifyChoice(scope.row)">修改</el-button>
-              <el-button type="danger" plain @click="removeChoice(scope.row)">删除</el-button>
-              <el-button type="primary" :disabled="scope.row.onlineTest_publish" plain @click="isPublish(scope.row.onlineTest_id,scope.row.onlineTest_publish)">上线</el-button>
-              <el-button type="info" :disabled="!scope.row.onlineTest_publish" plain @click="isPublish(scope.row.onlineTest_id,scope.row.onlineTest_publish)">下线</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-        <el-dialog title="内容详情" :visible.sync="dialogChoiceVisible">
-          <div class="choiceQuestion" v-for="(item,index) in choices" :key="index" style="border:1px solid #eee;margin-bottom:10px;padding:20px;">
-            <el-row type="flex" justify style="margin-bottom:20px;">
-              <el-col :span="20">{{index+1}}.{{item.title}}</el-col>
-              <el-col :span="4" style="text-align:right;">({{item.score}}分)</el-col>
-            </el-row>
-            <el-row type="flex" justify>
-              <el-col :span="24/item.optionsData.length" v-for="(selectItem,selectIndex) in item.optionsData" :key="selectIndex">{{selectItem.id}}.{{selectItem.options}}</el-col>
-            </el-row>
-          </div>
-        </el-dialog>
-        <el-dialog title="选择题" :visible.sync="modifyChoiceVisible" :before-close='resetChoice'>
-          <div class="courseMaterial__item">
-            <div class="courseMaterial__item-title">测试名称：
-              <el-input class="courseMaterial__item-input" v-model="choicesData.onlineTest_title"></el-input>
+    <div class="modifyOnlineTest">
+        <h1>{{ msg }}</h1>
+        <div class="courseMaterial">
+            <div class="courseMaterial__item">
+                <span>选择一个课程：</span>
+                <el-select v-model="value" placeholder="请选择">
+                    <el-option v-for="item in courseContent" :key="item.course_name" :label="item.course_name" :value="item.course_id">
+                    </el-option>
+                </el-select>
             </div>
-            <div>
-              <el-button @click="addNewSubjectFun()">添加选择题</el-button>
-            </div>
-            <el-card class="box" v-for="(item,index) in choicesData.onlineTest_content" :key="index">
-              <el-form ref="form" label-width="100px">
-                <el-form-item label="选题：">
-                  <el-button type="text" @click="deleteSubjectFun(index)">删除选题</el-button>
-                </el-form-item>
-                <el-form-item label="标题：" prop="name">
-                  <el-input placeholder="未填写" v-model="item.title"></el-input>
-                </el-form-item>
-                <el-form-item label="正确答案：">
-                  <el-input placeholder="未填写" disabled v-model="item.answer"></el-input>
-                  请在以下选项中，勾选出正确答案
-                </el-form-item>
-                <el-form-item label="分值：">
-                  <el-input v-model="item.score" @keyup.native='scoreFun(index)' type="number" min="1" max="100" placeholder="未填写"></el-input>
-                </el-form-item>
-                <el-form-item label="选项：">
-                  <div class="box__item-select-element" v-for="(selectItem,selectIndex) in item.optionsData" :key="selectIndex">
-                    <el-radio v-model="item.answer" :label="selectItem.id">{{selectItem.id}}</el-radio>
-                    <el-input v-model="selectItem.options" placeholder="未填写" style="width:300px;margin-left:10px;"></el-input>
-                    <div class="box__item-select-element_left">
-                      <el-button type="text" @click='addNewOptionsFun(index,selectIndex)' v-if="selectIndex==item.optionsData.length-1">添加选项</el-button>
-                      <el-button type="text" v-if="selectIndex==item.optionsData.length-1&&selectIndex>0" @click='deleteOptionsFun(index,selectIndex)'>删除选项</el-button>
+            <div class="courseMaterial__item">
+                <el-table :data="tableData" border style="width: 90%">
+                    <el-table-column prop="onlineTest_id" label="测试ID" width="100">
+                    </el-table-column>
+                    <el-table-column prop="onlineTest_title" label="测试名称" width="180">
+                    </el-table-column>
+                    <el-table-column label="状态" width="120">
+                        <template slot-scope="scope">
+                            <el-tag :type="publishStatusType(scope.row.onlineTest_publish)">{{publishStatus(scope.row.onlineTest_publish)}}</el-tag>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="详情" width="180">
+                        <template slot-scope="scope">
+                            <el-button type="success" @click="checkChoice(scope.row)">查看</el-button>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="操作">
+                        <template slot-scope="scope">
+                            <el-button plain @click="modifyChoice(scope.row)">修改</el-button>
+                            <el-button type="danger" plain @click="removeChoice(scope.row)">删除</el-button>
+                            <el-button type="primary" :disabled="scope.row.onlineTest_publish" plain @click="isPublish(scope.row.onlineTest_id,scope.row.onlineTest_publish)">上线</el-button>
+                            <el-button type="info" :disabled="!scope.row.onlineTest_publish" plain @click="isPublish(scope.row.onlineTest_id,scope.row.onlineTest_publish)">下线</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <el-dialog title="内容详情" :visible.sync="dialogChoiceVisible">
+                    <div class="choiceQuestion" v-for="(item,index) in choices" :key="index" style="border:1px solid #eee;margin-bottom:10px;padding:20px;">
+                        <el-row type="flex" justify style="margin-bottom:20px;">
+                            <el-col :span="20">{{index+1}}.{{item.title}}</el-col>
+                            <el-col :span="4" style="text-align:right;">({{item.score}}分)</el-col>
+                        </el-row>
+                        <el-row type="flex" justify>
+                            <el-col :span="24/item.optionsData.length" v-for="(selectItem,selectIndex) in item.optionsData" :key="selectIndex">{{selectItem.id}}.{{selectItem.options}}</el-col>
+                        </el-row>
                     </div>
-                  </div>
-                </el-form-item>
-                <el-form-item>
+                </el-dialog>
+                <el-dialog title="选择题" :visible.sync="modifyChoiceVisible" :before-close='resetChoice'>
+                    <div class="courseMaterial__item">
+                        <div class="courseMaterial__item-title">测试名称：
+                            <el-input class="courseMaterial__item-input" v-model="choicesData.onlineTest_title"></el-input>
+                        </div>
+                        <div>
+                            <el-button @click="addNewSubjectFun()">添加选择题</el-button>
+                        </div>
+                        <el-card class="box" v-for="(item,index) in choicesData.onlineTest_content" :key="index">
+                            <el-form ref="form" label-width="100px">
+                                <el-form-item label="选题：">
+                                    <el-button type="text" @click="deleteSubjectFun(index)">删除选题</el-button>
+                                </el-form-item>
+                                <el-form-item label="标题：" prop="name">
+                                    <el-input placeholder="未填写" v-model="item.title"></el-input>
+                                </el-form-item>
+                                <el-form-item label="正确答案：">
+                                    <el-input placeholder="未填写" disabled v-model="item.answer"></el-input>
+                                    请在以下选项中，勾选出正确答案
+                                </el-form-item>
+                                <el-form-item label="分值：">
+                                    <el-input v-model="item.score" @keyup.native='scoreFun(index)' type="number" min="1" max="100" placeholder="未填写"></el-input>
+                                </el-form-item>
+                                <el-form-item label="选项：">
+                                    <div class="box__item-select-element" v-for="(selectItem,selectIndex) in item.optionsData" :key="selectIndex">
+                                        <el-radio v-model="item.answer" :label="selectItem.id">{{selectItem.id}}</el-radio>
+                                        <el-input v-model="selectItem.options" placeholder="未填写" style="width:300px;margin-left:10px;"></el-input>
+                                        <div class="box__item-select-element_left">
+                                            <el-button type="text" @click='addNewOptionsFun(index,selectIndex)' v-if="selectIndex==item.optionsData.length-1">添加选项</el-button>
+                                            <el-button type="text" v-if="selectIndex==item.optionsData.length-1&&selectIndex>0" @click='deleteOptionsFun(index,selectIndex)'>删除选项</el-button>
+                                        </div>
+                                    </div>
+                                </el-form-item>
+                                <el-form-item>
 
-                </el-form-item>
-              </el-form>
-            </el-card>
-            <div class="submitBtn">
-              <el-button type="primary" @click="submitOnlineTest">提交</el-button>
+                                </el-form-item>
+                            </el-form>
+                        </el-card>
+                        <div class="submitBtn">
+                            <el-button type="primary" @click="submitOnlineTest">提交</el-button>
+                        </div>
+                    </div>
+                </el-dialog>
             </div>
-          </div>
-        </el-dialog>
-      </div>
+        </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -138,28 +138,42 @@ export default {
     methods: {
         //   删除在线测试
         removeChoice(choiceData) {
-            let data = {
-                onlineTest_id: choiceData.onlineTest_id,
-                course_id: this.value
-            };
+            this.$confirm("确认删除该测试, 是否继续?", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+            })
+                .then(() => {
+                    let data = {
+                        onlineTest_id: choiceData.onlineTest_id,
+                        course_id: this.value
+                    };
 
-            api
-                .removeOnlineTest(data)
-                .then(res => {
-                    if (res.code == 18) {
-                        let data = {
-                            query: {
-                                course_id: this.value
+                    api
+                        .removeOnlineTest(data)
+                        .then(res => {
+                            if (res.code == 18) {
+                                let data = {
+                                    query: {
+                                        course_id: this.value
+                                    }
+                                };
+                                this.$message.success(res.message);
+                                return api.findOnlineTest(data);
                             }
-                        };
-                        this.$message.success(res.message);
-                        return api.findOnlineTest(data);
-                    }
+                        })
+                        .then(res => {
+                            if (res.code == 16) {
+                                this.tableData = res.data;
+                            }
+                        });
                 })
-                .then(res => {
-                    if (res.code == 16) {
-                        this.tableData = res.data;
-                    }
+                .catch(err => {
+                    console.log(err);
+                    this.$message({
+                        type: "info",
+                        message: "取消删除"
+                    });
                 });
         },
         //   重置修改

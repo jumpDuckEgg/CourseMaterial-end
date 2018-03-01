@@ -4,7 +4,7 @@
 
         <div class="box">
             <el-table border :data="comments" style="width: 100%">
-                <el-table-column prop="comment_id" label="评价ID" width="100">
+                <el-table-column prop="comment_id" label="评价ID" width="80">
                 </el-table-column>
                 <el-table-column prop="comment_people" label="评价人" width="130">
                 </el-table-column>
@@ -18,7 +18,7 @@
                         <el-tag>{{commentType(scope.row.comment_type)}}</el-tag>
                     </template>
                 </el-table-column>
-                <el-table-column prop="type_id" label="评价类型ID" width="130">
+                <el-table-column prop="type_id" label="评价类型ID" width="100">
                 </el-table-column>
                 <el-table-column label="评价时间" width="180">
                     <template slot-scope="scope">

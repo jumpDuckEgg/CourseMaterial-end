@@ -5,14 +5,6 @@
       <el-table :data="content" style="width:100%">
         <el-table-column type="expand">
           <template slot-scope="props">
-            <!-- <el-form label-position="left" inline class="demo-table-expand">
-            <el-form-item label="课程描述:">
-              <span>{{ props.row.description }}</span>
-            </el-form-item>
-            <el-form-item label="课程申请书：">
-                <el-button type="text" @click="download(props.row.course_declaration)">下载</el-button>
-            </el-form-item>
-          </el-form> -->
             <el-steps :active="activeFlag(props.row.isPublish)" finish-status="success" :space="200">
               <el-step title="上传" description="上传资料成功"></el-step>
               <el-step title="审核中" description="等待管理员的审核"></el-step>
@@ -26,14 +18,15 @@
             </el-steps>
           </template>
         </el-table-column>
-        <el-table-column prop="course_id" label="课程id"></el-table-column>
-        <el-table-column prop="author" label="创建人"></el-table-column>
-        <el-table-column prop="course_name" label="课程名称"></el-table-column>
-        <el-table-column label="课程图片">
+        <el-table-column prop="course_id" label="课程id" width="100"></el-table-column>
+        <el-table-column prop="author" label="创建人" width="120"></el-table-column>
+        <el-table-column prop="course_name" label="课程名称" width="150"></el-table-column>
+        <el-table-column label="课程图片" width="130">
           <template slot-scope="scope">
             <img :src="scope.row.courseImage" alt="课程图片" style="width:40px;height:40px;">
           </template>
         </el-table-column>
+        <el-table-column prop="collectNum" label="课程收藏数" width="100"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button size="mini" :disabled="scope.row.isPublish=='examine'" @click="handleEdit(scope.$index, scope.row)">{{scope.row.isPublish=="fail"?'重新上传':'编辑'}}</el-button>

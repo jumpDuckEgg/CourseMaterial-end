@@ -79,7 +79,7 @@ export default {
     },
     // 获取全部评论通过ID
     getAllCommentById(params) {
-        return api.post('/comment/getAllCommentById',params).then(res => res.data)
+        return api.post('/comment/getAllCommentById', params).then(res => res.data)
     },
     // 评论上下线
     modifyCommentPublish(params) {
@@ -88,7 +88,24 @@ export default {
     // 删除评论
     deleteComment(params) {
         return api.post('/comment/deleteComment', params).then(res => res.data);
+    },
+    // 获取全部用户数据
+    getUserCountNum(params) {
+        return api.post('/user/getUserCountNum', params).then(res => res.data);
+    },
+    // 获取最新评论
+    getNewComment(params) {
+        return api.post('/comment/getCommentLimit', params).then(res => res.data);
+    },
+    // 获取课程最新收藏数
+    getNewCourse(params) {
+        return api.post('/course/getCourseLimit', params).then(res => res.data);
+    },
+    // 删除用户
+    deleteUser(params) {
+        return api.post('/user/deleteUser', params).then(res => res.data);
     }
+
 
 
 }

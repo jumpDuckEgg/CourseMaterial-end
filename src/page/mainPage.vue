@@ -12,7 +12,7 @@
           </el-col>
 
           <el-col :span="4" class="header__user">
-            <img src="../../static/mylogo.jpg" alt="头像" class="header__user-icon">
+            <img :src="this.$store.state.userImage" alt="头像" class="header__user-icon">
             <el-button size="mini" type="primary" icon='el-icon-menu' plain class="header__user-btn" @click="logout">注销</el-button>
           </el-col>
         </el-row>
