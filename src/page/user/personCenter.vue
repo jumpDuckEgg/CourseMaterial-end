@@ -108,7 +108,7 @@
                     <el-row v-for="(item,index) in newComment" :key="'comment'+index" class="commentItem">
                         <el-col :span="12" class="commentItem-left">{{item.comment_content}}</el-col>
                         <el-col :span="12" class="commentItem-right">
-                            <span>{{item.createdTime|formatDate}}</span>
+                            <el-tag type="success">{{item.createdTime|formatDate}}</el-tag>
                         </el-col>
                     </el-row>
                 </el-card>
@@ -122,7 +122,7 @@
                     <el-row v-for="(item,index) in newCourse" :key="'comment'+index" class="commentItem">
                         <el-col :span="12" class="commentItem-left">{{item.course_name}}</el-col>
                         <el-col :span="12" class="commentItem-right">
-                            <span>{{item.collectNum}}</span>
+                            <el-tag type="danger">{{item.collectNum}}</el-tag>
                         </el-col>
                     </el-row>
                 </el-card>
@@ -251,7 +251,6 @@ export default {
 }
 
 .box-card {
-    width: 480px;
     margin: 20px 0;
 }
 .commentItem {
@@ -264,11 +263,7 @@ export default {
     }
     &-right {
         text-align: right;
-        span {
-            background-color: rgba(190, 187, 187, 0.5);
-            padding: 2px 6px;
-            border-radius: 5px;
-        }
+
     }
 }
 </style>

@@ -1,6 +1,8 @@
 <template>
     <el-card class="login">
-        <div class="registerBtn"><el-button @click="tolink('/register')">注册</el-button></div>
+        <div class="registerBtn">
+            <el-button @click="tolink('/register')">注册</el-button>
+        </div>
         <div class="login__icon"><img src="../../static/egg.png" alt=""></div>
         <div class="login__title">网络应用技术资源库</div>
         <el-form ref="form" :model="form" :rules="rules" label-width="70px" status-icon class="login__form">
@@ -39,7 +41,7 @@ export default {
         };
     },
     methods: {
-        tolink(url){
+        tolink(url) {
             this.$router.push(url);
         },
         onSubmit(formName) {
@@ -56,6 +58,13 @@ export default {
                             this.$notify({
                                 type: "error",
                                 message: result.message
+                            });
+                        } else if (result.code == 65) {
+                            this.$notify({
+                                type: "error",
+                                message:
+                                    "该用户已被封禁，封禁理由：" +
+                                    result.data.disUsedMessage +",解封请联系管理员"
                             });
                         } else {
                             this.$notify({
@@ -113,7 +122,7 @@ export default {
         text-align: center;
     }
 }
-.registerBtn{
+.registerBtn {
     position: absolute;
     right: 5px;
     top: 5px;

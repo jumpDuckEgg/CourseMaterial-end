@@ -104,8 +104,10 @@ export default {
     // 删除用户
     deleteUser(params) {
         return api.post('/user/deleteUser', params).then(res => res.data);
-    }
-
-
+    },
+    // 修改用户信息
+    modifyUser(params) {
+        return api.post('/user/updateUserInformation', params).then(res => res.data);
+    },
 
 }

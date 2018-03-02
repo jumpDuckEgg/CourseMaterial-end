@@ -1,32 +1,45 @@
 <template>
-  <div class="userInformation">
-    <h1>{{ msg }}</h1>
+    <div class="userInformation">
+        <h1>{{ msg }}</h1>
 
-    <div class="box">
-      <el-table border :data="userInfo" style="width: 100%">
-        <el-table-column prop="user_id" label="用户ID" width="100">
-        </el-table-column>
-        <el-table-column prop="username" label="用户名" width="150">
-        </el-table-column>
-        <el-table-column label="用户类型" width="150">
-          <template slot-scope="scope">
-            {{getUserType(scope.row.userType)}}
-          </template>
-        </el-table-column>
-        <el-table-column label="用户头像" width="150">
-          <template slot-scope="scope">
-            <img :src="scope.row.userImage" alt="用户头像" style="width:40px;height:40px;">
-          </template>
-        </el-table-column>
-        <el-table-column label="操作">
-          <template slot-scope="scope">
-            <el-button size="mini">编辑</el-button>
-            <el-button size="mini" type="danger" @click="deleteUser(scope.row)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+        <div class="box">
+            <el-table border :data="userInfo" style="width: 100%">
+                <el-table-column type="expand">
+                    <template slot-scope="props">
+                        <div>用户状态：{{usedStatus(props.row.disUsed)}}</div>
+                        <div v-if="props.row.disUsed">封禁理由：{{props.row.disUsedMessage}}</div>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="user_id"  sortable label="用户ID" width="100">
+                </el-table-column>
+                <el-table-column prop="username" label="用户名" width="150">
+                </el-table-column>
+                <el-table-column label="用户类型" width="150" prop="userType" :filters="[{ text: '学生', value: 0 }, { text: '教师', value: 1 }, { text: '超级管理员', value: 3 }]" :filter-method="filterTag">
+                    <template slot-scope="scope">
+                        {{getUserType(scope.row.userType)}}
+                    </template>
+                </el-table-column>
+                <el-table-column label="用户头像" width="150">
+                    <template slot-scope="scope">
+                        <img :src="scope.row.userImage" alt="用户头像" style="width:40px;height:40px;">
+                    </template>
+                </el-table-column>
+                <el-table-column label="状态" width="100" prop="disUsed"  :filters="[{ text: '正常', value: false }, { text: '封禁中', value: true }]" :filter-method="filterDisUsed">
+                    <template slot-scope="scope">
+                        <el-tag :type="usedStatusType(scope.row.disUsed)">{{usedStatus(scope.row.disUsed)}}</el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作">
+                    <template slot-scope="scope">
+                        <!-- <el-button size="mini">编辑</el-button> -->
+                        <el-button size="mini" type="primary" :disabled="scope.row.disUsed" @click="userOpen(scope.row,'dis')">封号</el-button>
+                        <el-button size="mini" type="success" :disabled="!scope.row.disUsed" @click="userOpen(scope.row,'open')">解除</el-button>
+                        <el-button size="mini" type="danger" @click="deleteUser(scope.row)">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -48,6 +61,101 @@ export default {
         });
     },
     methods: {
+        filterDisUsed(value, row) {
+            return row.disUsed === value;
+        },
+        filterTag(value, row) {
+            return row.userType === value;
+        },
+        usedStatusType(status) {
+            switch (status) {
+                case false:
+                    return "success";
+                    break;
+                case true:
+                    return "danger";
+                    break;
+                default:
+                    break;
+            }
+        },
+        usedStatus(status) {
+            switch (status) {
+                case false:
+                    return "正常";
+                    break;
+                case true:
+                    return "封禁中";
+                    break;
+                default:
+                    break;
+            }
+        },
+        userOpen(data, type) {
+            if (type == "dis") {
+                this.$prompt("请输入封禁理由", "提示", {
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
+                    inputValidator: value => {
+                        if (!value) {
+                            return false;
+                        }
+                    },
+                    inputErrorMessage: "不能为空"
+                })
+                    .then(({ value }) => {
+                        let updateData = {
+                            query: {
+                                user_id: data.user_id
+                            },
+                            update: {
+                                disUsed: !data.disUsed,
+                                disUsedMessage: value
+                            }
+                        };
+                        api.modifyUser(updateData).then(res => {
+                            if (res.code == 6) {
+                                this.$message.success(res.message);
+                                api.getAllUsers().then(data => {
+                                    let result = data.data;
+                                    if (result.code == 6) {
+                                        this.userInfo = result.data;
+                                    }
+                                });
+                            }
+                            if (res.code == 64) {
+                                this.$message.warning(res.message);
+                            }
+                        });
+                    })
+                    .catch(() => {
+                        this.$message({
+                            type: "info",
+                            message: "取消封禁"
+                        });
+                    });
+            } else {
+                let updateData = {
+                    query: {
+                        user_id: data.user_id
+                    },
+                    update: {
+                        disUsed: !data.disUsed
+                    }
+                };
+                api.modifyUser(updateData).then(res => {
+                    if (res.code == 6) {
+                        this.$message.success(res.message);
+                        api.getAllUsers().then(data => {
+                            let result = data.data;
+                            if (result.code == 6) {
+                                this.userInfo = result.data;
+                            }
+                        });
+                    }
+                });
+            }
+        },
         deleteUser(data) {
             this.$confirm("此操作将永久删除该用户, 是否继续?", "提示", {
                 confirmButtonText: "确定",
@@ -69,8 +177,8 @@ export default {
                                 this.$message.success("删除用户成功");
                             });
                         }
-                        if(res.code == 64){
-                          this.$message.error(res.message);
+                        if (res.code == 64) {
+                            this.$message.error(res.message);
                         }
                     });
                 })

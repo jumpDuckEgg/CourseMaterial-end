@@ -2,7 +2,8 @@
   <div class="deleteCourse" v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
     <h1>{{ msg }}</h1>
     <div>
-      <el-table :data="content" style="width:100%">
+      <el-table border :data="content" height="700" style="width:100%;margin:20px 0;" 
+>
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-steps :active="activeFlag(props.row.isPublish)" finish-status="success" :space="200">
@@ -18,15 +19,21 @@
             </el-steps>
           </template>
         </el-table-column>
-        <el-table-column prop="course_id" label="课程id" width="100"></el-table-column>
+        <el-table-column prop="course_id" sortable label="课程id" width="90"></el-table-column>
         <el-table-column prop="author" label="创建人" width="120"></el-table-column>
+        
         <el-table-column prop="course_name" label="课程名称" width="150"></el-table-column>
-        <el-table-column label="课程图片" width="130">
+        <el-table-column label="课程图片" width="110">
           <template slot-scope="scope">
             <img :src="scope.row.courseImage" alt="课程图片" style="width:40px;height:40px;">
           </template>
         </el-table-column>
-        <el-table-column prop="collectNum" label="课程收藏数" width="100"></el-table-column>
+        <el-table-column label="创建时间"  width="130">
+          <template slot-scope="scope">
+            <el-tag type="success">{{scope.row.createdTime|formatDate}}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="collectNum" sortable label="课程收藏数" width="120"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button size="mini" :disabled="scope.row.isPublish=='examine'" @click="handleEdit(scope.$index, scope.row)">{{scope.row.isPublish=="fail"?'重新上传':'编辑'}}</el-button>
@@ -83,6 +90,7 @@
 </template>
 
 <script>
+import moment from "moment";
 import _ from "lodash";
 import api from "../../util/api.js";
 export default {
@@ -369,7 +377,11 @@ export default {
         download(url) {
             window.location.href = url;
         }
-    }
+    },filters: {
+        formatDate: function(value) {
+            return moment(value).format("YYYY-MM-DD");
+        }
+    },
 };
 </script>
 

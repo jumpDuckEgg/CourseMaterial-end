@@ -3,17 +3,17 @@
         <h1>{{ msg }}</h1>
 
         <div class="box">
-            <el-table border :data="comments" style="width: 100%">
-                <el-table-column prop="comment_id" label="评价ID" width="80">
+            <el-table border :data="comments" style="width: 100%" height="750">
+                <el-table-column prop="comment_id" label="评价ID" sortable width="90">
                 </el-table-column>
-                <el-table-column prop="comment_people" label="评价人" width="130">
+                <el-table-column prop="comment_people" label="评价人" width="100">
                 </el-table-column>
                 <el-table-column label="评价人头像" width="100">
                     <template slot-scope="scope">
                         <img :src="scope.row.people_image" alt="用户头像" style="width:40px;height:40px;">
                     </template>
                 </el-table-column>
-                <el-table-column label="评价类型" width="100">
+                <el-table-column label="评价类型" width="100" prop="comment_type"  :filters="[{ text: '课程', value: 'course' }, { text: '视频', value: 'videos' }, { text: '模拟试题', value: 'test' }, { text: '习题作业', value: 'homework' }, { text: '实验资源', value: 'experiment' }]" :filter-method="filterTag">
                     <template slot-scope="scope">
                         <el-tag>{{commentType(scope.row.comment_type)}}</el-tag>
                     </template>
@@ -29,8 +29,8 @@
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <el-button size="mini" type="success" :disabled="scope.row.isPublish" @click="commentPublish(scope.row)">上架</el-button>
-                        <el-button size="mini" type="info" :disabled="!scope.row.isPublish" @click="commentPublish(scope.row)">下架</el-button>
+                        <el-button size="mini" type="success" :disabled="scope.row.isPublish" @click="commentPublish(scope.row)">显示</el-button>
+                        <el-button size="mini" type="info" :disabled="!scope.row.isPublish" @click="commentPublish(scope.row)">隐藏</el-button>
                         <el-button size="mini" type="danger" @click="deleteComment(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
@@ -58,6 +58,9 @@ export default {
         });
     },
     methods: {
+        filterTag(value, row) {
+            return row.comment_type === value;
+        },
         deleteComment(data) {
             this.$confirm("确认删除该评价, 是否继续?", "提示", {
                 confirmButtonText: "确定",
@@ -101,6 +104,9 @@ export default {
                     break;
                 case "homework":
                     return "习题作业";
+                    break;
+                case "experiment":
+                    return "实验资源";
                     break;
                 default:
                     break;
