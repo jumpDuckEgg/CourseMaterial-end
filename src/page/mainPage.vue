@@ -74,7 +74,7 @@
               <i class="el-icon-menu"></i>
               <span slot="title">个人评论</span>
             </el-menu-item>
-            <el-menu-item index="7" @click="tolink('/course/personComment')">
+            <el-menu-item index="7" @click="tolink('/modifyUser')">
               <i class="el-icon-news"></i>
               <span slot="title">个人信息</span>
             </el-menu-item>

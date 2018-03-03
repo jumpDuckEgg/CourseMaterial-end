@@ -90,6 +90,13 @@ const PersonComment = resolve => {
   })
 }
 
+const ModifyUser = resolve=>{
+  require.ensure(['@/page/user/modifyUser.vue'],()=>{
+    resolve(require('@/page/user/modifyUser.vue'))
+  })
+}
+
+
 const router = new Router({
   mode: 'history',
   routes: [
@@ -112,6 +119,14 @@ const router = new Router({
           path: 'user',
           name: 'userInformation',
           component: UserInformation,
+          meta: {
+            requiresAuth: true
+          },
+        },
+        {
+          path: 'modifyUser',
+          name: 'modifyUser',
+          component: ModifyUser,
           meta: {
             requiresAuth: true
           },

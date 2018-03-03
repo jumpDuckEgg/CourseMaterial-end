@@ -105,6 +105,9 @@
                         <span>最新评论</span>
                         <el-button style="float: right; padding: 3px 0" type="text" @click="tolink('/course/personComment')">更多</el-button>
                     </div>
+                    <div class="no-content" v-if="newComment.length==0">
+                        暂无信息
+                    </div>
                     <el-row v-for="(item,index) in newComment" :key="'comment'+index" class="commentItem">
                         <el-col :span="12" class="commentItem-left">{{item.comment_content}}</el-col>
                         <el-col :span="12" class="commentItem-right">
@@ -118,6 +121,9 @@
                     <div slot="header" class="clearfix">
                         <span>最新收藏数</span>
                         <el-button style="float: right; padding: 3px 0" type="text" @click="tolink('/course/modifyCourse')">更多</el-button>
+                    </div>
+                    <div class="no-content" v-if="newCourse.length==0">
+                        暂无信息
                     </div>
                     <el-row v-for="(item,index) in newCourse" :key="'comment'+index" class="commentItem">
                         <el-col :span="12" class="commentItem-left">{{item.course_name}}</el-col>
@@ -133,6 +139,7 @@
 </template>
 
 <script>
+
 import moment from "moment";
 import api from "../../util/api.js";
 export default {
@@ -265,5 +272,9 @@ export default {
         text-align: right;
 
     }
+}
+.no-content{
+    text-align: center;
+    margin:10px 0;
 }
 </style>

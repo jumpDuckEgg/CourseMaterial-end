@@ -6,6 +6,9 @@ export default {
     },
     UserLogout({commit},data){
         commit(types.LOGOUT,data)
+    },
+    UserUpdateLogo({ commit }, data) {
+        commit(types.UPDATELOGO, data)
     }
 
 }

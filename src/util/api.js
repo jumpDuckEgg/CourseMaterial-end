@@ -13,6 +13,10 @@ export default {
     getAllUsers() {
         return api.get('/user');
     },
+    // 获取用户信息
+    getUserById(params) {
+        return api.post('/user/getUserInformation', params).then(res => res.data);
+    },
     //获取上传token
     getUploadToken(params) {
         return api.post('/uploadtoken', params).then(res => res.data);
