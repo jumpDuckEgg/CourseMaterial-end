@@ -35,10 +35,6 @@
                 <el-menu-item index="1-4" @click="tolink('/course/addCourseMaterial')">添加课程资料</el-menu-item>
                 <el-menu-item index="1-5" @click="tolink('/course/modifyCourseMaterial')">修改课程资料</el-menu-item>
               </el-menu-item-group>
-              <!-- <el-submenu index="1-8">
-                <template slot="title">选项4</template>
-                <el-menu-item index="1-8-1">选项1</el-menu-item>
-              </el-submenu> -->
             </el-submenu>
             <el-menu-item index="2" @click="tolink('/commentManager')">
               <i class="el-icon-menu"></i>
@@ -78,6 +74,19 @@
               <i class="el-icon-news"></i>
               <span slot="title">个人信息</span>
             </el-menu-item>
+            <el-submenu index="8">
+              <template slot="title">
+                <i class="el-icon-setting"></i>
+                <span>模拟试卷</span>
+              </template>
+              <el-menu-item-group>
+                <template slot="title">分组一</template>
+                <el-menu-item index="8-1" @click="tolink('/moniExam/addMoniTest')">试题创建</el-menu-item>
+                <el-menu-item index="8-2" @click="tolink('/moniExam/modifyMoniTest')">试题修改</el-menu-item>
+                <el-menu-item index="8-3" @click="tolink('/moniExam/createMoniExam')">试卷创建</el-menu-item>
+                <el-menu-item index="8-4" @click="tolink('/moniExam/modifyMoniExam')">试卷修改</el-menu-item>
+              </el-menu-item-group>
+            </el-submenu>
           </el-menu>
         </el-aside>
         <el-main>

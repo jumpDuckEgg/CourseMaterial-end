@@ -96,6 +96,37 @@ const ModifyUser = resolve=>{
   })
 }
 
+const MoniExamIndex = resolve =>{
+  require.ensure(['@/page/moniExam/moniExamIndex.vue'],()=>{
+    resolve(require('@/page/moniExam/moniExamIndex.vue'))
+  })
+}
+
+const AddMoniTest = resolve =>{
+  require.ensure(['@/page/moniExam/addMoniTest.vue'],()=>{
+    resolve(require('@/page/moniExam/addMoniTest.vue'))
+  })
+}
+
+const CreateMoniExam = resolve =>{
+  require.ensure(['@/page/moniExam/createMoniExam.vue'],()=>{
+    resolve(require('@/page/moniExam/createMoniExam.vue'))
+  })
+}
+
+const ModifyMoniTest = resolve =>{
+  require.ensure(['@/page/moniExam/modifyMoniTest.vue'],()=>{
+    resolve(require('@/page/moniExam/modifyMoniTest.vue'))
+  })
+}
+
+const ModifyMoniExam = resolve =>{
+  require.ensure(['@/page/moniExam/modifyMoniExam.vue'],()=>{
+    resolve(require('@/page/moniExam/modifyMoniExam.vue'))
+  })
+}
+
+
 
 const router = new Router({
   mode: 'history',
@@ -209,6 +240,45 @@ const router = new Router({
           meta: {
             requiresAuth: true
           }
+        },
+        {
+          path: 'moniExam',
+          component: MoniExamIndex,
+
+          children: [
+            {
+              path: 'addMoniTest',
+              name: 'addMoniTest',
+              component: AddMoniTest,
+              meta: {
+                requiresAuth: true
+              },
+            },
+            {
+              path: 'createMoniExam',
+              name: 'createMoniExam',
+              component: CreateMoniExam,
+              meta: {
+                requiresAuth: true
+              },
+            },
+            {
+              path: 'modifyMoniTest',
+              name: 'modifyMoniTest',
+              component: ModifyMoniTest,
+              meta: {
+                requiresAuth: true
+              },
+            },
+            {
+              path: 'modifyMoniExam',
+              name: 'modifyMoniExam',
+              component: ModifyMoniExam,
+              meta: {
+                requiresAuth: true
+              },
+            },
+          ]
         }
 
 

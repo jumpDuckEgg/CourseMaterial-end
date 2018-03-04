@@ -113,5 +113,9 @@ export default {
     modifyUser(params) {
         return api.post('/user/updateUserInformation', params).then(res => res.data);
     },
+    // 添加模拟试题
+    addMoniTest(params){
+        return api.post('/moniTest/createMoniTest',params).then(res=>res.data);
+    }
 
 }
