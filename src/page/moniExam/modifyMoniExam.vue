@@ -1,6 +1,7 @@
 <template>
   <div class="modifyMoniExam">
     <h1>{{ msg }}</h1>
+    
   </div>
 </template>
 

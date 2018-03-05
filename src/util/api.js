@@ -114,8 +114,20 @@ export default {
         return api.post('/user/updateUserInformation', params).then(res => res.data);
     },
     // 添加模拟试题
-    addMoniTest(params){
-        return api.post('/moniTest/createMoniTest',params).then(res=>res.data);
+    addMoniTest(params) {
+        return api.post('/moniTest/createMoniTest', params).then(res => res.data);
+    },
+    // 查找试题通过参数
+    getAllMoniTestByOptions(params) {
+        return api.post('/moniTest/getAllMoniTestByOptions', params).then(res => res.data);
+    },
+    // 修改试题
+    modifyMoniTest(params) {
+        return api.post('/moniTest/modifyMoniTest', params).then(res => res.data);
+    },
+    // 删除试题
+    deleteMoniTest(params) {
+        return api.post('/moniTest/deleteMoniTest', params).then(res => res.data);
     }
 
 }

@@ -78,6 +78,7 @@ export default {
         }
           if (this.code != this.vcode) {
             this.$message.warning("验证码错误，请重新填写");
+            this.code = '';
             let result = verification.create();
             this.vcode = result.code; // 随机生成的验证码
             this.imgDataURL = result.dataURL; // 验证码图片的 base64
