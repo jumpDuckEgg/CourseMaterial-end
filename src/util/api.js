@@ -128,6 +128,10 @@ export default {
     // 删除试题
     deleteMoniTest(params) {
         return api.post('/moniTest/deleteMoniTest', params).then(res => res.data);
+    },
+    // 添加模拟试卷
+    addMoniExam(params) {
+        return api.post('/moniExam/createdMoniExam', params).then(res => res.data)
     }
 
 }
