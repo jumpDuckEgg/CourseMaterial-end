@@ -132,6 +132,18 @@ export default {
     // 添加模拟试卷
     addMoniExam(params) {
         return api.post('/moniExam/createdMoniExam', params).then(res => res.data)
+    },
+    // 获取模拟试卷通过课程ID
+    getAllMoniExamByOptions(params) {
+        return api.post('/moniExam/getAllMoniExamByOptions', params).then(res => res.data);
+    },
+    // 更新模拟试卷
+    modifyMoniExamByOptions(params) {
+        return api.post('/moniExam/modifyMoniExamByOptions', params).then(res => res.data);
+    },
+    // 删除模拟试卷
+    deleteMoniExam(params) {
+        return api.post('/moniExam/deleteMoniExam', params).then(res => res.data);
     }
 
 }
