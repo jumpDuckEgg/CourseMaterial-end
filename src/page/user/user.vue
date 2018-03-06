@@ -38,6 +38,10 @@
                     </template>
                 </el-table-column>
             </el-table>
+            <div style="text-align:center;margin:10px 0;">
+                <el-pagination layout="prev, pager, next" @size-change="handleSizeChange" @current-change="handleCurrentChange" :total="total" :current-page.sync='currentPage'>
+                </el-pagination>
+            </div>
         </div>
     </div>
 </template>
@@ -45,203 +49,245 @@
 <script>
 import api from "../../util/api.js";
 export default {
-    name: "userInformation",
-    data() {
-        return {
-            msg: "用户信息详情",
-            userInfo: []
-        };
+  name: "userInformation",
+  data() {
+    return {
+      msg: "用户信息详情",
+      userInfo: [],
+      total: 0,
+      pageSize: 10,
+      currentUserInfo: [],
+      currentPage: 1
+    };
+  },
+  created() {
+    api.getAllUsers().then(data => {
+      let result = data.data;
+      if (result.code == 6) {
+      }
+      this.userInfo = result.data;
+      this.total = this.userInfo.length;
+      let offset = 0 * this.pageSize;
+      this.currentUserInfo =
+        offset + this.pageSize >= this.userInfo.length
+          ? this.userInfo.slice(offset, this.userInfo.length)
+          : this.userInfo.slice(offset, offset + this.pageSize);
+      this.currentPage = 1;
+    });
+  },
+  methods: {
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
     },
-    created() {
-        api.getAllUsers().then(data => {
-            let result = data.data;
-            if (result.code == 6) {
+    handleCurrentChange(val) {
+      let offset = (val - 1) * this.pageSize;
+      this.currentUserInfo =
+        offset + this.pageSize >= this.userInfo.length
+          ? this.userInfo.slice(offset, this.userInfo.length)
+          : this.userInfo.slice(offset, offset + this.pageSize);
+    },
+    changePassword(data) {
+      this.$prompt("请输入新密码", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        inputValidator: value => {
+          if (!value) {
+            return false;
+          }
+        },
+        inputErrorMessage: "不能为空"
+      })
+        .then(({ value }) => {
+          let updateData = {
+            user_id: data.user_id,
+
+            password: value
+          };
+          api.modifyUserPassword(updateData).then(res => {
+            if (res.code == 6) {
+              this.$message.success("修改密码成功");
             }
-            this.userInfo = result.data;
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "取消修改"
+          });
         });
     },
-    methods: {
-        changePassword(data) {
-            this.$prompt("请输入新密码", "提示", {
-                confirmButtonText: "确定",
-                cancelButtonText: "取消",
-                inputValidator: value => {
-                    if (!value) {
-                        return false;
-                    }
-                },
-                inputErrorMessage: "不能为空"
-            })
-                .then(({ value }) => {
-                    let updateData = {
-                        user_id: data.user_id,
-
-                        password: value
-                    };
-                    api.modifyUserPassword(updateData).then(res => {
-                        if(res.code == 6){
-                            this.$message.success("修改密码成功")
-                        }
-                    });
-                })
-                .catch(() => {
-                    this.$message({
-                        type: "info",
-                        message: "取消修改"
-                    });
+    filterDisUsed(value, row) {
+      return row.disUsed === value;
+    },
+    filterTag(value, row) {
+      return row.userType === value;
+    },
+    usedStatusType(status) {
+      switch (status) {
+        case false:
+          return "success";
+          break;
+        case true:
+          return "danger";
+          break;
+        default:
+          break;
+      }
+    },
+    usedStatus(status) {
+      switch (status) {
+        case false:
+          return "正常";
+          break;
+        case true:
+          return "封禁中";
+          break;
+        default:
+          break;
+      }
+    },
+    userOpen(data, type) {
+      if (type == "dis") {
+        this.$prompt("请输入封禁理由", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          inputValidator: value => {
+            if (!value) {
+              return false;
+            }
+          },
+          inputErrorMessage: "不能为空"
+        })
+          .then(({ value }) => {
+            let updateData = {
+              query: {
+                user_id: data.user_id
+              },
+              update: {
+                disUsed: !data.disUsed,
+                disUsedMessage: value
+              }
+            };
+            api.modifyUser(updateData).then(res => {
+              if (res.code == 6) {
+                this.$message.success(res.message);
+                api.getAllUsers().then(data => {
+                  let result = data.data;
+                  if (result.code == 6) {
+                    this.userInfo = result.data;
+                    this.total = this.userInfo.length;
+                    let offset = 0;
+                    this.currentUserInfo =
+                      offset + this.pageSize >= this.userInfo.length
+                        ? this.userInfo.slice(offset, this.userInfo.length)
+                        : this.userInfo.slice(offset, offset + this.pageSize);
+                    this.currentPage = 1;
+                  }
                 });
-        },
-        filterDisUsed(value, row) {
-            return row.disUsed === value;
-        },
-        filterTag(value, row) {
-            return row.userType === value;
-        },
-        usedStatusType(status) {
-            switch (status) {
-                case false:
-                    return "success";
-                    break;
-                case true:
-                    return "danger";
-                    break;
-                default:
-                    break;
+              }
+              if (res.code == 64) {
+                this.$message.warning(res.message);
+              }
+            });
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "取消封禁"
+            });
+          });
+      } else {
+        let updateData = {
+          query: {
+            user_id: data.user_id
+          },
+          update: {
+            disUsed: !data.disUsed
+          }
+        };
+        api.modifyUser(updateData).then(res => {
+          if (res.code == 6) {
+            this.$message.success(res.message);
+            api.getAllUsers().then(data => {
+              let result = data.data;
+              if (result.code == 6) {
+                this.userInfo = result.data;
+                this.total = this.userInfo.length;
+                let offset = 0 * this.pageSize;
+                this.currentUserInfo =
+                  offset + this.pageSize >= this.userInfo.length
+                    ? this.userInfo.slice(offset, this.userInfo.length)
+                    : this.userInfo.slice(offset, offset + this.pageSize);
+                this.currentPage = 1;
+              }
+            });
+          }
+        });
+      }
+    },
+    deleteUser(data) {
+      this.$confirm("此操作将永久删除该用户, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          let userData = {
+            user_id: data.user_id,
+            username: data.username
+          };
+          api.deleteUser(userData).then(res => {
+            if (res.code == 63) {
+              api.getAllUsers().then(users => {
+                let result = users.data;
+                if (result.code == 6) {
+                }
+                this.userInfo = result.data;
+                this.$message.success("删除用户成功");
+                this.total = this.userInfo.length;
+                let offset = 0 * this.pageSize;
+                this.currentUserInfo =
+                  offset + this.pageSize >= this.userInfo.length
+                    ? this.userInfo.slice(offset, this.userInfo.length)
+                    : this.userInfo.slice(offset, offset + this.pageSize);
+                this.currentPage = 1;
+              });
             }
-        },
-        usedStatus(status) {
-            switch (status) {
-                case false:
-                    return "正常";
-                    break;
-                case true:
-                    return "封禁中";
-                    break;
-                default:
-                    break;
+            if (res.code == 64) {
+              this.$message.error(res.message);
             }
-        },
-        userOpen(data, type) {
-            if (type == "dis") {
-                this.$prompt("请输入封禁理由", "提示", {
-                    confirmButtonText: "确定",
-                    cancelButtonText: "取消",
-                    inputValidator: value => {
-                        if (!value) {
-                            return false;
-                        }
-                    },
-                    inputErrorMessage: "不能为空"
-                })
-                    .then(({ value }) => {
-                        let updateData = {
-                            query: {
-                                user_id: data.user_id
-                            },
-                            update: {
-                                disUsed: !data.disUsed,
-                                disUsedMessage: value
-                            }
-                        };
-                        api.modifyUser(updateData).then(res => {
-                            if (res.code == 6) {
-                                this.$message.success(res.message);
-                                api.getAllUsers().then(data => {
-                                    let result = data.data;
-                                    if (result.code == 6) {
-                                        this.userInfo = result.data;
-                                    }
-                                });
-                            }
-                            if (res.code == 64) {
-                                this.$message.warning(res.message);
-                            }
-                        });
-                    })
-                    .catch(() => {
-                        this.$message({
-                            type: "info",
-                            message: "取消封禁"
-                        });
-                    });
-            } else {
-                let updateData = {
-                    query: {
-                        user_id: data.user_id
-                    },
-                    update: {
-                        disUsed: !data.disUsed
-                    }
-                };
-                api.modifyUser(updateData).then(res => {
-                    if (res.code == 6) {
-                        this.$message.success(res.message);
-                        api.getAllUsers().then(data => {
-                            let result = data.data;
-                            if (result.code == 6) {
-                                this.userInfo = result.data;
-                            }
-                        });
-                    }
-                });
-            }
-        },
-        deleteUser(data) {
-            this.$confirm("此操作将永久删除该用户, 是否继续?", "提示", {
-                confirmButtonText: "确定",
-                cancelButtonText: "取消",
-                type: "warning"
-            })
-                .then(() => {
-                    let userData = {
-                        user_id: data.user_id,
-                        username: data.username
-                    };
-                    api.deleteUser(userData).then(res => {
-                        if (res.code == 63) {
-                            api.getAllUsers().then(users => {
-                                let result = users.data;
-                                if (result.code == 6) {
-                                }
-                                this.userInfo = result.data;
-                                this.$message.success("删除用户成功");
-                            });
-                        }
-                        if (res.code == 64) {
-                            this.$message.error(res.message);
-                        }
-                    });
-                })
-                .catch(err => {
-                    console.log(err);
-                    this.$message({
-                        type: "info",
-                        message: "已取消删除"
-                    });
-                });
-        },
-        getUserType(type) {
-            switch (type) {
-                case 0:
-                    return "学生";
-                    break;
-                case 1:
-                    return "教师";
-                    break;
-                case 3:
-                    return "超级管理员";
-                    break;
-                default:
-                    break;
-            }
-        }
+          });
+        })
+        .catch(err => {
+          console.log(err);
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
+    },
+    getUserType(type) {
+      switch (type) {
+        case 0:
+          return "学生";
+          break;
+        case 1:
+          return "教师";
+          break;
+        case 3:
+          return "超级管理员";
+          break;
+        default:
+          break;
+      }
     }
+  }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang='scss'scoped>
 .box {
-    margin: 10px 0;
+  margin: 10px 0;
 }
 </style>

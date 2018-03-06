@@ -60,7 +60,7 @@ export default {
         api.getAllCommentById(data).then(res => {
             if (res.code == 21) {
                 this.comments = res.data;
-                this.total = this.comments.length - 10;
+                this.total = this.comments.length;
                 let offset = 0;
                 this.currentComments =
                     offset + this.pageSize >= this.comments.length
