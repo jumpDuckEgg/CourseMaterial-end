@@ -3,8 +3,8 @@
         <h1>{{ msg }}</h1>
 
         <div class="box">
-            <el-table border :data="comments" style="width: 100%">
-                
+            <el-table border :data="currentComments" style="width: 100%">
+
                 <el-table-column prop="comment_id" label="评价ID" sortable width="100">
                 </el-table-column>
                 <el-table-column prop="comment_people" label="评价人" width="100">
@@ -14,7 +14,7 @@
                         <img :src="scope.row.people_image" alt="用户头像" style="width:40px;height:40px;">
                     </template>
                 </el-table-column>
-                <el-table-column label="评价类型" width="100" prop="comment_type"   :filters="[{ text: '课程', value: 'course' }, { text: '视频', value: 'videos' }, { text: '模拟试题', value: 'test' }, { text: '习题作业', value: 'homework' }, { text: '实验资源', value: 'experiment' }]" :filter-method="filterTag">
+                <el-table-column label="评价类型" width="100" prop="comment_type" :filters="[{ text: '课程', value: 'course' }, { text: '视频', value: 'videos' }, { text: '模拟试题', value: 'test' }, { text: '习题作业', value: 'homework' }, { text: '实验资源', value: 'experiment' }]" :filter-method="filterTag">
                     <template slot-scope="scope">
                         <el-tag>{{commentType(scope.row.comment_type)}}</el-tag>
                     </template>
@@ -30,6 +30,10 @@
                 </el-table-column>
 
             </el-table>
+            <div style="text-align:center;margin:10px 0;">
+                <el-pagination layout="prev, pager, next" @size-change="handleSizeChange" @current-change="handleCurrentChange" :total="total" :current-page='1'>
+                </el-pagination>
+            </div>
         </div>
     </div>
 </template>
@@ -42,7 +46,10 @@ export default {
     data() {
         return {
             msg: "评价管理",
-            comments: []
+            comments: [],
+            total: 0,
+            currentComments: [],
+            pageSize: 10
         };
     },
     created() {
@@ -53,11 +60,28 @@ export default {
         api.getAllCommentById(data).then(res => {
             if (res.code == 21) {
                 this.comments = res.data;
+                this.total = this.comments.length - 10;
+                let offset = 0;
+                this.currentComments =
+                    offset + this.pageSize >= this.comments.length
+                        ? this.comments.slice(offset, this.comments.length)
+                        : this.comments.slice(offset, offset + this.pageSize);
+
             }
         });
     },
     methods: {
-         filterTag(value, row) {
+        handleSizeChange(val) {
+            console.log(`每页 ${val} 条`);
+        },
+        handleCurrentChange(val) {
+            let offset = (val - 1) * this.pageSize;
+            this.currentComments =
+                offset + this.pageSize >= this.comments.length
+                    ? this.comments.slice(offset, this.comments.length)
+                    : this.comments.slice(offset, offset + this.pageSize);
+        },
+        filterTag(value, row) {
             return row.comment_type === value;
         },
         commentType(type) {

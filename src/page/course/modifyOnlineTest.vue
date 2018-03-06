@@ -20,7 +20,7 @@
                             <el-tag :type="publishStatusType(scope.row.onlineTest_publish)">{{publishStatus(scope.row.onlineTest_publish)}}</el-tag>
                         </template>
                     </el-table-column>
-                    <el-table-column label="详情" width="180">
+                    <el-table-column label="详情" width="100">
                         <template slot-scope="scope">
                             <el-button type="success" @click="checkChoice(scope.row)">查看</el-button>
                         </template>

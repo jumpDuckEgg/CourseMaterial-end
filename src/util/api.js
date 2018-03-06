@@ -144,6 +144,10 @@ export default {
     // 删除模拟试卷
     deleteMoniExam(params) {
         return api.post('/moniExam/deleteMoniExam', params).then(res => res.data);
+    },
+    // 修改用户密码
+    modifyUserPassword(params){
+        return api.post('/user/modifyUserPassword',params).then(res=>res.data)
     }
 
 }

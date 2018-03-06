@@ -10,7 +10,7 @@
                         <div v-if="props.row.disUsed">封禁理由：{{props.row.disUsedMessage}}</div>
                     </template>
                 </el-table-column>
-                <el-table-column prop="user_id"  sortable label="用户ID" width="100">
+                <el-table-column prop="user_id" sortable label="用户ID" width="100">
                 </el-table-column>
                 <el-table-column prop="username" label="用户名" width="150">
                 </el-table-column>
@@ -24,14 +24,14 @@
                         <img :src="scope.row.userImage" alt="用户头像" style="width:40px;height:40px;">
                     </template>
                 </el-table-column>
-                <el-table-column label="状态" width="100" prop="disUsed"  :filters="[{ text: '正常', value: false }, { text: '封禁中', value: true }]" :filter-method="filterDisUsed">
+                <el-table-column label="状态" width="100" prop="disUsed" :filters="[{ text: '正常', value: false }, { text: '封禁中', value: true }]" :filter-method="filterDisUsed">
                     <template slot-scope="scope">
                         <el-tag :type="usedStatusType(scope.row.disUsed)">{{usedStatus(scope.row.disUsed)}}</el-tag>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <!-- <el-button size="mini">编辑</el-button> -->
+                        <el-button size="mini" @click="changePassword(scope.row)">修改密码</el-button>
                         <el-button size="mini" type="primary" :disabled="scope.row.disUsed" @click="userOpen(scope.row,'dis')">封号</el-button>
                         <el-button size="mini" type="success" :disabled="!scope.row.disUsed" @click="userOpen(scope.row,'open')">解除</el-button>
                         <el-button size="mini" type="danger" @click="deleteUser(scope.row)">删除</el-button>
@@ -61,6 +61,36 @@ export default {
         });
     },
     methods: {
+        changePassword(data) {
+            this.$prompt("请输入新密码", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                inputValidator: value => {
+                    if (!value) {
+                        return false;
+                    }
+                },
+                inputErrorMessage: "不能为空"
+            })
+                .then(({ value }) => {
+                    let updateData = {
+                        user_id: data.user_id,
+
+                        password: value
+                    };
+                    api.modifyUserPassword(updateData).then(res => {
+                        if(res.code == 6){
+                            this.$message.success("修改密码成功")
+                        }
+                    });
+                })
+                .catch(() => {
+                    this.$message({
+                        type: "info",
+                        message: "取消修改"
+                    });
+                });
+        },
         filterDisUsed(value, row) {
             return row.disUsed === value;
         },
