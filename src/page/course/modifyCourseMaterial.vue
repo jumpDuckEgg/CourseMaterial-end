@@ -200,6 +200,8 @@ export default {
             this.coursewaresDataSet.currentPage = 1;
           } else {
             this.coursewares = [];
+            this.coursewaresData=[];
+            this.coursewaresDataSet.currentPage = 1;
           }
           if (result.experiments) {
             this.experiments = result.experiments;
@@ -216,6 +218,9 @@ export default {
             this.experimentsDataSet.currentPage = 1;
           } else {
             this.experiments = [];
+            this.experimentsData=[];
+            this.experimentsDataSet.currentPage = 1;
+            console.log("我是空的")
           }
           if (result.tests) {
             this.tests = result.tests;
@@ -228,6 +233,8 @@ export default {
             this.testsDataSet.currentPage = 1;
           } else {
             this.tests = [];
+            this.testsData=[];
+            this.testsDataSet.currentPage = 1;
           }
           if (result.videos) {
             this.videos = result.videos;
@@ -243,6 +250,8 @@ export default {
             this.videosDataSet.currentPage = 1;
           } else {
             this.videos = [];
+            this.videosData=[];
+            this.videosDataSet.currentPage = 1;
           }
           if (result.homeworks) {
             this.homeworks = result.homeworks;
@@ -258,6 +267,8 @@ export default {
             this.homeworksDataSet.currentPage = 1;
           } else {
             this.homeworks = [];
+            this.homeworksData=[];
+            this.homeworksDataSet.currentPage = 1;
           }
         }
       });

@@ -7,6 +7,11 @@
         <el-option v-for="item in courseContent" :key="item.course_name" :label="item.course_name" :value="item.course_id">
         </el-option>
       </el-select>
+      <div style="margin:10px 0;text-align:right">
+        <el-input style="width:200px" placeholder="请输入试卷名称" v-model="keyword"></el-input>
+        <el-button type="primary" icon="el-icon-search" @click="sreachMoniExam">搜索</el-button>
+      </div>
+
     </div>
     <div class="tableBox">
       <el-table :data="currentMoniExam" border style="width: 100%">
@@ -105,345 +110,424 @@
 import _ from "lodash";
 import api from "../../util/api.js";
 export default {
-  name: "modifyMoniExam",
-  data() {
-    return {
-      msg: "试卷修改",
-      courseValue: "",
-      courseContent: [],
-      moniExams: [],
-      watchDialogVisible: false,
-      modifyDialogVisible: false,
-      radioMoniTest: [],
-      checkMoniTest: [],
-      judgeMoniTest: [],
-      moniTests: [],
-      title: "",
-      transferData: [],
-      moniExam_id: 0,
-      tempData: {},
-      total: 0,
-      pageSize: 10,
-      currentMoniExam: [],
-      currentPage: 1
-    };
-  },
-  created() {
-    let data = {
-      params: {
-        author: this.$store.state.username,
-        isPublish: "pass"
-      },
-      options: ["course_name", "course_id"]
-    };
-    api.findAllCourseByAuthor(data).then(res => {
-      this.courseContent = res.data;
-    });
-  },
-  watch: {
-    courseValue: function(newValue, oldValue) {
-      let data = {
-        query: {
-          course_id: newValue
-        }
-      };
-      api.getAllMoniExamByOptions(data).then(res => {
-        if (res.code == 32) {
-          this.moniExams = res.data;
-          this.total = this.moniExams.length;
-          let offset = 0;
-          this.currentMoniExam =
-            offset + this.pageSize >= this.moniExams.length
-              ? this.moniExams.slice(offset, this.moniExams.length)
-              : this.moniExams.slice(offset, offset + this.pageSize);
-          this.currentPage = 1;
-        }
-      });
-      let data2 = {
-        courseid: newValue
-      };
-      api.getAllMoniTestByOptions(data2).then(res => {
-        if (res.code == 28) {
-          let radioMoniTest = _.filter(res.data, function(o) {
-            return o.moniTest_type == "radio";
-          });
-          let checkMoniTest = _.filter(res.data, function(o) {
-            return o.moniTest_type == "check";
-          });
-          let judgeMoniTest = _.filter(res.data, function(o) {
-            return o.moniTest_type == "judge";
-          });
-          this.moniTests = _.concat(
-            radioMoniTest,
-            checkMoniTest,
-            judgeMoniTest
-          );
-        }
-      });
-    }
-  },
-  methods: {
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+    name: "modifyMoniExam",
+    data() {
+        return {
+            msg: "试卷修改",
+            courseValue: "",
+            courseContent: [],
+            moniExams: [],
+            watchDialogVisible: false,
+            modifyDialogVisible: false,
+            radioMoniTest: [],
+            checkMoniTest: [],
+            judgeMoniTest: [],
+            moniTests: [],
+            title: "",
+            transferData: [],
+            moniExam_id: 0,
+            tempData: {},
+            total: 0,
+            pageSize: 10,
+            currentMoniExam: [],
+            currentPage: 1,
+            keyword: "",
+            sreachmoniExams: []
+        };
     },
-    handleCurrentChange(val) {
-      let offset = (val - 1) * this.pageSize;
-      this.currentMoniExam =
-        offset + this.pageSize >= this.moniExams.length
-          ? this.moniExams.slice(offset, this.moniExams.length)
-          : this.moniExams.slice(offset, offset + this.pageSize);
-    },
-    deleteMoniExam(data) {
-      this.$confirm("此操作将删除该试卷, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          let removeData = {
-            moniExam_id: data.moniExam_id,
-            course_id: data.course_id
-          };
-          api.deleteMoniExam(removeData).then(res => {
-            if (res.code == 34) {
-              this.$message.success(res.message);
-              let data = {
-                query: {
-                  course_id: this.courseValue
-                }
-              };
-              api.getAllMoniExamByOptions(data).then(res => {
-                if (res.code == 32) {
-                  this.moniExams = res.data;
-                  this.total = this.moniExams.length;
-                  let offset = 0;
-                  this.currentMoniExam =
-                    offset + this.pageSize >= this.moniExams.length
-                      ? this.moniExams.slice(offset, this.moniExams.length)
-                      : this.moniExams.slice(offset, offset + this.pageSize);
-                  this.currentPage = 1;
-                }
-              });
-            }
-          });
-        })
-        .catch(err => {
-          this.$message({
-            type: "info",
-            message: "已取消操作"
-          });
+    created() {
+        let data = {
+            params: {
+                author: this.$store.state.username,
+                isPublish: "pass"
+            },
+            options: ["course_name", "course_id"]
+        };
+        api.findAllCourseByAuthor(data).then(res => {
+            this.courseContent = res.data;
         });
     },
-    moniExamPublish(data, type) {
-      if (type == "yes") {
-        let updateData = {
-          query: {
-            moniExam_id: data.moniExam_id
-          },
-          options: {
-            moniExam_isPublish: !data.moniExam_isPublish
-          }
-        };
-        api.modifyMoniExamByOptions(updateData).then(res => {
-          if (res.code == 33) {
-            this.$message.success(res.message);
+    watch: {
+        courseValue: function(newValue, oldValue) {
             let data = {
-              query: {
-                course_id: this.courseValue
-              }
+                query: {
+                    course_id: newValue
+                }
             };
             api.getAllMoniExamByOptions(data).then(res => {
-              if (res.code == 32) {
-                this.moniExams = res.data;
-              }
-            });
-          }
-        });
-      }
-      if (type == "no") {
-        this.$confirm("此操作将下架该试卷, 是否继续?", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        })
-          .then(() => {
-            let updateData = {
-              query: {
-                moniExam_id: data.moniExam_id
-              },
-              options: {
-                moniExam_isPublish: !data.moniExam_isPublish
-              }
-            };
-            api.modifyMoniExamByOptions(updateData).then(res => {
-              if (res.code == 33) {
-                this.$message.success(res.message);
-                let data = {
-                  query: {
-                    course_id: this.courseValue
-                  }
-                };
-                api.getAllMoniExamByOptions(data).then(res => {
-                  if (res.code == 32) {
+                if (res.code == 32) {
                     this.moniExams = res.data;
                     this.total = this.moniExams.length;
                     let offset = 0;
                     this.currentMoniExam =
-                      offset + this.pageSize >= this.moniExams.length
-                        ? this.moniExams.slice(offset, this.moniExams.length)
-                        : this.moniExams.slice(offset, offset + this.pageSize);
+                        offset + this.pageSize >= this.moniExams.length
+                            ? this.moniExams.slice(
+                                  offset,
+                                  this.moniExams.length
+                              )
+                            : this.moniExams.slice(
+                                  offset,
+                                  offset + this.pageSize
+                              );
                     this.currentPage = 1;
-                  }
-                });
-              }
+                }
             });
-          })
-          .catch(err => {
-            this.$message({
-              type: "info",
-              message: "已取消操作"
+            let data2 = {
+                courseid: newValue
+            };
+            api.getAllMoniTestByOptions(data2).then(res => {
+                if (res.code == 28) {
+                    let radioMoniTest = _.filter(res.data, function(o) {
+                        return o.moniTest_type == "radio";
+                    });
+                    let checkMoniTest = _.filter(res.data, function(o) {
+                        return o.moniTest_type == "check";
+                    });
+                    let judgeMoniTest = _.filter(res.data, function(o) {
+                        return o.moniTest_type == "judge";
+                    });
+                    this.moniTests = _.concat(
+                        radioMoniTest,
+                        checkMoniTest,
+                        judgeMoniTest
+                    );
+                }
             });
-          });
-      }
+        }
     },
-    createdExam() {
-      if (!this.title.trim()) {
-        this.$message.warning("标题不能为空");
-        return false;
-      }
-      if (this.transferData.length == 0) {
-        this.$message.warning("试题不能为空");
-        return false;
-      }
-      this.$confirm("此操作将生成试卷, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          let createdData = {
-            moniExam_title: this.title,
-            moniExam_content: this.moniExamData,
-            moniTests: this.transferData
-          };
-          let updateData = {
-            query: {
-              moniExam_id: this.moniExam_id
-            },
-            options: createdData
-          };
-          api.modifyMoniExamByOptions(updateData).then(res => {
-            if (res.code == 33) {
-              this.$message.success(res.message);
-              let data = {
-                query: {
-                  course_id: this.courseValue
-                }
-              };
-              api.getAllMoniExamByOptions(data).then(res => {
-                if (res.code == 32) {
-                  this.moniExams = res.data;
-                  this.total = this.moniExams.length;
-                  let offset = 0;
-                  this.currentMoniExam =
-                    offset + this.pageSize >= this.moniExams.length
-                      ? this.moniExams.slice(offset, this.moniExams.length)
-                      : this.moniExams.slice(offset, offset + this.pageSize);
-                  this.currentPage = 1;
-                }
-              });
-
-              this.modifyDialogVisible = false;
+    methods: {
+        sreachMoniExam() {
+            if (!this.courseValue) {
+                this.$message.warning("请选择一个课程");
             }
-          });
-        })
-        .catch(err => {
-          this.$message({
-            type: "info",
-            message: "已取消生成"
-          });
-        });
-    },
-    changeTransfer() {
-      let data = [];
-      this.transferData.map(value => {
-        let temp = _.filter(this.moniTests, function(o) {
-          return o.moniTest_id == value;
-        });
-        data.push(temp[0]);
-      });
-      let tempData = _.compact(data);
+            let rule = new RegExp(this.keyword.trim());
 
-      this.radioMoniTest = _.filter(tempData, function(o) {
-        return o.moniTest_type == "radio";
-      });
-      this.checkMoniTest = _.filter(tempData, function(o) {
-        return o.moniTest_type == "check";
-      });
-      this.judgeMoniTest = _.filter(tempData, function(o) {
-        return o.moniTest_type == "judge";
-      });
-      this.moniExamData = _.concat(
-        this.radioMoniTest,
-        this.checkMoniTest,
-        this.judgeMoniTest
-      );
-    },
-    modifyMoniExam(data) {
-      this.tempData = data;
-      this.title = data.moniExam_title;
-      this.moniExam_id = data.moniExam_id;
-      this.transferData = data.moniTests;
-      this.modifyDialogVisible = true;
-    },
-    watchMoniExam(data) {
-      this.radioMoniTest = _.filter(data.moniExam_content, function(o) {
-        return o.moniTest_type == "radio";
-      });
-      this.checkMoniTest = _.filter(data.moniExam_content, function(o) {
-        return o.moniTest_type == "check";
-      });
-      this.judgeMoniTest = _.filter(data.moniExam_content, function(o) {
-        return o.moniTest_type == "judge";
-      });
-      this.watchDialogVisible = true;
-    },
-    reviewMoniExam() {
-      this.watchDialogVisible = true;
-    },
-    moniExamStatus(status) {
-      switch (status) {
-        case true:
-          return "发布中";
-          break;
-        case false:
-          return "下架中";
-          break;
-        default:
-          break;
-      }
-    },
-    filterMoniExamStatus(value, row) {
-      return row.moniExam_isPublish === value;
+            this.sreachmoniExams = _.filter(this.moniExams, function(o) {
+                return rule.test(o.moniExam_title);
+            });
+
+            this.total = this.sreachmoniExams.length;
+            let offset = 0;
+            this.currentMoniExam =
+                offset + this.pageSize >= this.sreachmoniExams.length
+                    ? this.sreachmoniExams.slice(
+                          offset,
+                          this.sreachmoniExams.length
+                      )
+                    : this.sreachmoniExams.slice(
+                          offset,
+                          offset + this.pageSize
+                      );
+            this.currentPage = 1;
+        },
+        handleSizeChange(val) {
+            console.log(`每页 ${val} 条`);
+        },
+        handleCurrentChange(val) {
+            let offset = (val - 1) * this.pageSize;
+            this.currentMoniExam =
+                offset + this.pageSize >= this.moniExams.length
+                    ? this.moniExams.slice(offset, this.moniExams.length)
+                    : this.moniExams.slice(offset, offset + this.pageSize);
+            if (this.keyword.trim()) {
+                this.currentMoniExam =
+                    offset + this.pageSize >= this.sreachmoniExams.length
+                        ? this.sreachmoniExams.slice(
+                              offset,
+                              this.sreachmoniExams.length
+                          )
+                        : this.sreachmoniExams.slice(
+                              offset,
+                              offset + this.pageSize
+                          );
+            }
+        },
+        deleteMoniExam(data) {
+            this.$confirm("此操作将删除该试卷, 是否继续?", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+            })
+                .then(() => {
+                    let removeData = {
+                        moniExam_id: data.moniExam_id,
+                        course_id: data.course_id
+                    };
+                    api.deleteMoniExam(removeData).then(res => {
+                        if (res.code == 34) {
+                            this.$message.success(res.message);
+                            let data = {
+                                query: {
+                                    course_id: this.courseValue
+                                }
+                            };
+                            api.getAllMoniExamByOptions(data).then(res => {
+                                if (res.code == 32) {
+                                    this.moniExams = res.data;
+                                    this.total = this.moniExams.length;
+                                    let offset = 0;
+                                    this.currentMoniExam =
+                                        offset + this.pageSize >=
+                                        this.moniExams.length
+                                            ? this.moniExams.slice(
+                                                  offset,
+                                                  this.moniExams.length
+                                              )
+                                            : this.moniExams.slice(
+                                                  offset,
+                                                  offset + this.pageSize
+                                              );
+                                    this.currentPage = 1;
+                                }
+                            });
+                        }
+                    });
+                })
+                .catch(err => {
+                    this.$message({
+                        type: "info",
+                        message: "已取消操作"
+                    });
+                });
+        },
+        moniExamPublish(data, type) {
+            if (type == "yes") {
+                let updateData = {
+                    query: {
+                        moniExam_id: data.moniExam_id
+                    },
+                    options: {
+                        moniExam_isPublish: !data.moniExam_isPublish
+                    }
+                };
+                api.modifyMoniExamByOptions(updateData).then(res => {
+                    if (res.code == 33) {
+                        this.$message.success(res.message);
+                        let data = {
+                            query: {
+                                course_id: this.courseValue
+                            }
+                        };
+                        api.getAllMoniExamByOptions(data).then(res => {
+                            if (res.code == 32) {
+                                this.moniExams = res.data;
+                                this.total = this.moniExams.length;
+                                let offset = 0;
+                                this.currentMoniExam =
+                                    offset + this.pageSize >=
+                                    this.moniExams.length
+                                        ? this.moniExams.slice(
+                                              offset,
+                                              this.moniExams.length
+                                          )
+                                        : this.moniExams.slice(
+                                              offset,
+                                              offset + this.pageSize
+                                          );
+                                this.currentPage = 1;
+                            }
+                        });
+                    }
+                });
+            }
+            if (type == "no") {
+                this.$confirm("此操作将下架该试卷, 是否继续?", "提示", {
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
+                    type: "warning"
+                })
+                    .then(() => {
+                        let updateData = {
+                            query: {
+                                moniExam_id: data.moniExam_id
+                            },
+                            options: {
+                                moniExam_isPublish: !data.moniExam_isPublish
+                            }
+                        };
+                        api.modifyMoniExamByOptions(updateData).then(res => {
+                            if (res.code == 33) {
+                                this.$message.success(res.message);
+                                let data = {
+                                    query: {
+                                        course_id: this.courseValue
+                                    }
+                                };
+                                api.getAllMoniExamByOptions(data).then(res => {
+                                    if (res.code == 32) {
+                                        this.moniExams = res.data;
+                                        this.total = this.moniExams.length;
+                                        let offset = 0;
+                                        this.currentMoniExam =
+                                            offset + this.pageSize >=
+                                            this.moniExams.length
+                                                ? this.moniExams.slice(
+                                                      offset,
+                                                      this.moniExams.length
+                                                  )
+                                                : this.moniExams.slice(
+                                                      offset,
+                                                      offset + this.pageSize
+                                                  );
+                                        this.currentPage = 1;
+                                    }
+                                });
+                            }
+                        });
+                    })
+                    .catch(err => {
+                        this.$message({
+                            type: "info",
+                            message: "已取消操作"
+                        });
+                    });
+            }
+        },
+        createdExam() {
+            if (!this.title.trim()) {
+                this.$message.warning("标题不能为空");
+                return false;
+            }
+            if (this.transferData.length == 0) {
+                this.$message.warning("试题不能为空");
+                return false;
+            }
+            this.$confirm("此操作将生成试卷, 是否继续?", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+            })
+                .then(() => {
+                    let createdData = {
+                        moniExam_title: this.title,
+                        moniExam_content: this.moniExamData,
+                        moniTests: this.transferData
+                    };
+                    let updateData = {
+                        query: {
+                            moniExam_id: this.moniExam_id
+                        },
+                        options: createdData
+                    };
+                    api.modifyMoniExamByOptions(updateData).then(res => {
+                        if (res.code == 33) {
+                            this.$message.success(res.message);
+                            let data = {
+                                query: {
+                                    course_id: this.courseValue
+                                }
+                            };
+                            api.getAllMoniExamByOptions(data).then(res => {
+                                if (res.code == 32) {
+                                    this.moniExams = res.data;
+                                    this.total = this.moniExams.length;
+                                    let offset = 0;
+                                    this.currentMoniExam =
+                                        offset + this.pageSize >=
+                                        this.moniExams.length
+                                            ? this.moniExams.slice(
+                                                  offset,
+                                                  this.moniExams.length
+                                              )
+                                            : this.moniExams.slice(
+                                                  offset,
+                                                  offset + this.pageSize
+                                              );
+                                    this.currentPage = 1;
+                                }
+                            });
+
+                            this.modifyDialogVisible = false;
+                        }
+                    });
+                })
+                .catch(err => {
+                    this.$message({
+                        type: "info",
+                        message: "已取消生成"
+                    });
+                });
+        },
+        changeTransfer() {
+            let data = [];
+            this.transferData.map(value => {
+                let temp = _.filter(this.moniTests, function(o) {
+                    return o.moniTest_id == value;
+                });
+                data.push(temp[0]);
+            });
+            let tempData = _.compact(data);
+
+            this.radioMoniTest = _.filter(tempData, function(o) {
+                return o.moniTest_type == "radio";
+            });
+            this.checkMoniTest = _.filter(tempData, function(o) {
+                return o.moniTest_type == "check";
+            });
+            this.judgeMoniTest = _.filter(tempData, function(o) {
+                return o.moniTest_type == "judge";
+            });
+            this.moniExamData = _.concat(
+                this.radioMoniTest,
+                this.checkMoniTest,
+                this.judgeMoniTest
+            );
+        },
+        modifyMoniExam(data) {
+            this.tempData = data;
+            this.title = data.moniExam_title;
+            this.moniExam_id = data.moniExam_id;
+            this.transferData = data.moniTests;
+            this.modifyDialogVisible = true;
+        },
+        watchMoniExam(data) {
+            this.radioMoniTest = _.filter(data.moniExam_content, function(o) {
+                return o.moniTest_type == "radio";
+            });
+            this.checkMoniTest = _.filter(data.moniExam_content, function(o) {
+                return o.moniTest_type == "check";
+            });
+            this.judgeMoniTest = _.filter(data.moniExam_content, function(o) {
+                return o.moniTest_type == "judge";
+            });
+            this.watchDialogVisible = true;
+        },
+        reviewMoniExam() {
+            this.watchDialogVisible = true;
+        },
+        moniExamStatus(status) {
+            switch (status) {
+                case true:
+                    return "发布中";
+                    break;
+                case false:
+                    return "下架中";
+                    break;
+                default:
+                    break;
+            }
+        },
+        filterMoniExamStatus(value, row) {
+            return row.moniExam_isPublish === value;
+        }
     }
-  }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang='scss'scoped>
 .tableBox {
-  margin: 20px 0;
+    margin: 20px 0;
 }
 .radioBox {
-  margin: 10px 0;
-  border: 1px solid black;
-  padding: 10px;
-  &-title {
-    margin-bottom: 10px;
-  }
+    margin: 10px 0;
+    border: 1px solid black;
+    padding: 10px;
+    &-title {
+        margin-bottom: 10px;
+    }
 }
 .exam-title {
-  margin: 10px 0;
+    margin: 10px 0;
 }
 </style>

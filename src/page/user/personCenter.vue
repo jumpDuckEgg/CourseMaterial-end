@@ -9,7 +9,7 @@
                 <div style="height:140px;border-radius:8px;background-color:#31b48c;color:white">
                     <el-row class="item1">
                         <el-col :span="16">
-                            <div class="item1-left">个人课程统计</div>
+                            <div class="item1-left">{{dataSet.oneText}}</div>
                         </el-col>
                         <el-col :span="8">
                             <div class="item1-right">
@@ -18,10 +18,10 @@
                         </el-col>
                     </el-row>
                     <div class="num">
-                        {{courseNum}}
+                        {{dataSet.oneNum}}
                     </div>
                     <div class="normal">
-                        {{courseNum}}
+                        {{dataSet.oneNum}}
                     </div>
                     <div class="normal">
                         当前分类总记录数
@@ -32,7 +32,7 @@
                 <div style="height:140px;border-radius:8px;background-color:#38a1f2;color:white">
                     <el-row class="item1">
                         <el-col :span="16">
-                            <div class="item1-left">个人附件统计</div>
+                            <div class="item1-left">{{dataSet.twoText}}</div>
                         </el-col>
                         <el-col :span="8">
                             <div class="item1-right">
@@ -41,10 +41,10 @@
                         </el-col>
                     </el-row>
                     <div class="num">
-                        {{materialNum}}
+                        {{dataSet.twoNum}}
                     </div>
                     <div class="normal">
-                        {{materialNum}}
+                        {{dataSet.twoNum}}
                     </div>
                     <div class="normal">
                         当前分类总记录数
@@ -55,7 +55,7 @@
                 <div style="height:140px;border-radius:8px;background-color:#7438c7;color:white">
                     <el-row class="item1">
                         <el-col :span="16">
-                            <div class="item1-left">评论统计</div>
+                            <div class="item1-left">{{dataSet.threeText}}</div>
                         </el-col>
                         <el-col :span="8">
                             <div class="item1-right">
@@ -64,10 +64,10 @@
                         </el-col>
                     </el-row>
                     <div class="num">
-                        {{commentNum}}
+                        {{dataSet.threeNum}}
                     </div>
                     <div class="normal">
-                        {{commentNum}}
+                        {{dataSet.threeNum}}
                     </div>
                     <div class="normal">
                         当前分类总记录数
@@ -78,7 +78,7 @@
                 <div style="height:140px;border-radius:8px;background-color:#3b67a4;color:white">
                     <el-row class="item1">
                         <el-col :span="16">
-                            <div class="item1-left">在线测试统计</div>
+                            <div class="item1-left">{{dataSet.fourText}}</div>
                         </el-col>
                         <el-col :span="8">
                             <div class="item1-right">
@@ -87,10 +87,10 @@
                         </el-col>
                     </el-row>
                     <div class="num">
-                        {{onlineTestNum}}
+                        {{dataSet.fourNum}}
                     </div>
                     <div class="normal">
-                        {{onlineTestNum}}
+                        {{dataSet.fourNum}}
                     </div>
                     <div class="normal">
                         当前分类总记录数
@@ -103,7 +103,8 @@
                 <el-card class="box-card">
                     <div slot="header" class="clearfix">
                         <span>最新评论</span>
-                        <el-button style="float: right; padding: 3px 0" type="text" @click="tolink('/course/personComment')">更多</el-button>
+                        <el-button style="float: right; padding: 3px 0" type="text" @click="tolink('/course/personComment')" v-if='this.$store.state.user_type==1'>更多</el-button>
+                        <el-button style="float: right; padding: 3px 0" type="text" @click="tolink('/commentManager')" v-if='this.$store.state.user_type==3'>更多</el-button>
                     </div>
                     <div class="no-content" v-if="newComment.length==0">
                         暂无信息
@@ -116,7 +117,7 @@
                     </el-row>
                 </el-card>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="12" v-if="this.$store.state.user_type==1">
                 <el-card class="box-card">
                     <div slot="header" class="clearfix">
                         <span>最新收藏数</span>
@@ -133,13 +134,29 @@
                     </el-row>
                 </el-card>
             </el-col>
+            <el-col :span="12" v-if="this.$store.state.user_type==3">
+                <el-card class="box-card">
+                    <div slot="header" class="clearfix">
+                        <span>最新待审核课程</span>
+                        <el-button style="float: right; padding: 3px 0" type="text" @click="tolink('/course/examineCourse')">更多</el-button>
+                    </div>
+                    <div class="no-content" v-if="coursePublish.length==0">
+                        暂无信息
+                    </div>
+                    <el-row v-for="(item,index) in coursePublish" :key="'comment'+index" class="commentItem">
+                        <el-col :span="12" class="commentItem-left">{{item.course_name}}</el-col>
+                        <el-col :span="12" class="commentItem-right">
+                            <el-tag type="danger">{{item.createdTime|formatDate}}</el-tag>
+                        </el-col>
+                    </el-row>
+                </el-card>
+            </el-col>
         </el-row>
 
     </div>
 </template>
 
 <script>
-
 import moment from "moment";
 import api from "../../util/api.js";
 export default {
@@ -153,43 +170,85 @@ export default {
             onlineTestNum: 0,
             loadingFlag: true,
             newComment: [],
-            newCourse: []
+            newCourse: [],
+            dataSet: {
+                oneText: "",
+                oneNum: 0,
+                twoText: "",
+                twoNum: 0,
+                threeText: "",
+                threeNum: 0,
+                fourText: "",
+                fourNum: 0
+            },
+            coursePublish:[]
         };
     },
     created() {
-        let data = {
-            username: this.$store.state.username
-        };
-        api.getUserCountNum(data).then(res => {
-            if (res.code == 62) {
-                this.courseNum = res.data.courseNum;
-                this.materialNum = res.data.materialNum;
-                this.commentNum = res.data.commentNum;
-                this.onlineTestNum = res.data.onlineTestNum;
-                this.loadingFlag = false;
-            }
-        });
+        if (this.$store.state.user_type == 1) {
+            let data = {
+                username: this.$store.state.username
+            };
+            api.getUserCountNum(data).then(res => {
+                if (res.code == 62) {
+                    this.dataSet.oneText = "个人课程统计";
+                    this.dataSet.twoText = "个人附件统计";
+                    this.dataSet.threeText = "评论统计";
+                    this.dataSet.fourText = "在线测试统计";
+                    this.dataSet.oneNum = res.data.courseNum;
+                    this.dataSet.twoNum = res.data.materialNum;
+                    this.dataSet.threeNum = res.data.commentNum;
+                    this.dataSet.fourNum = res.data.onlineTestNum;
+                    this.loadingFlag = false;
+                }
+            });
 
-        let commentData = {
-            comment_people: this.$store.state.username,
-            people_id: this.$store.state.user_id
-        };
+            let commentData = {
+                comment_people: this.$store.state.username,
+                people_id: this.$store.state.user_id
+            };
 
-        api.getNewComment(commentData).then(res => {
-            if (res.code == 21) {
-                this.newComment = res.data;
-            }
-        });
+            api.getNewComment(commentData).then(res => {
+                if (res.code == 21) {
+                    this.newComment = res.data;
+                }
+            });
 
-        let courseData = {
-            author: this.$store.state.username
-        };
+            let courseData = {
+                author: this.$store.state.username
+            };
 
-        api.getNewCourse(courseData).then(res => {
-            if (res.code == 8) {
-                this.newCourse = res.data;
-            }
-        });
+            api.getNewCourse(courseData).then(res => {
+                if (res.code == 8) {
+                    this.newCourse = res.data;
+                }
+            });
+        }
+        if (this.$store.state.user_type == 3) {
+            api.getUserNumData().then(res => {
+                if (res.code == 62) {
+                    this.dataSet.oneText = "教师用户统计";
+                    this.dataSet.twoText = "学生用户统计";
+                    this.dataSet.threeText = "待审核课程统计";
+                    this.dataSet.fourText = "评价个数统计";
+                    this.dataSet.oneNum = res.data.teacherCount;
+                    this.dataSet.twoNum = res.data.studentCount;
+                    this.dataSet.threeNum = res.data.courseNum;
+                    this.dataSet.fourNum = res.data.courseCommentNum;
+                    this.loadingFlag = false;
+                }
+            });
+            api.getNewCommentByAdmin().then(res => {
+                if (res.code == 21) {
+                    this.newComment = res.data;
+                }
+            });
+            api.getCourseByAdmin().then(res=>{
+                if(res.code == 8){
+                    this.coursePublish = res.data;
+                }
+            })
+        }
     },
     filters: {
         formatDate: function(value) {
@@ -270,11 +329,10 @@ export default {
     }
     &-right {
         text-align: right;
-
     }
 }
-.no-content{
+.no-content {
     text-align: center;
-    margin:10px 0;
+    margin: 10px 0;
 }
 </style>

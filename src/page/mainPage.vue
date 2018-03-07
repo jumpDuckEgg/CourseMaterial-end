@@ -27,21 +27,21 @@
               </template>
               <el-menu-item-group>
                 <template slot="title">分组一</template>
-                <el-menu-item index="1-1" @click="tolink('/course/createCourse')">添加课程</el-menu-item>
-                <el-menu-item index="1-2" @click="tolink('/course/modifyCourse')">修改课程</el-menu-item>
-                <el-menu-item index="1-3" @click="tolink('/course/examineCourse')">审核课程</el-menu-item>
+                <el-menu-item index="1-1" @click="tolink('/course/createCourse')" v-if="this.$store.state.user_type == 1">添加课程</el-menu-item>
+                <el-menu-item index="1-2" @click="tolink('/course/modifyCourse')"  v-if="this.$store.state.user_type == 1">修改课程</el-menu-item>
+                <el-menu-item index="1-3" @click="tolink('/course/examineCourse')"  v-if="this.$store.state.user_type == 3">审核课程</el-menu-item>
               </el-menu-item-group>
-              <el-menu-item-group title="分组2">
-                <el-menu-item index="1-4" @click="tolink('/course/addCourseMaterial')">添加课程资料</el-menu-item>
-                <el-menu-item index="1-5" @click="tolink('/course/modifyCourseMaterial')">修改课程资料</el-menu-item>
+              <el-menu-item-group title="分组2" v-if="this.$store.state.user_type == 1">
+                <el-menu-item index="1-4" @click="tolink('/course/addCourseMaterial')"  >添加课程资料</el-menu-item>
+                <el-menu-item index="1-5" @click="tolink('/course/modifyCourseMaterial')"  >修改课程资料</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
-            <el-menu-item index="2" @click="tolink('/commentManager')">
+            <el-menu-item index="2" @click="tolink('/commentManager')"  v-if="this.$store.state.user_type == 3">
               <i class="el-icon-menu"></i>
               <span slot="title">评价管理</span>
             </el-menu-item>
 
-            <el-submenu index="3">
+            <el-submenu index="3"  v-if="this.$store.state.user_type == 3">
               <template slot="title">
                 <i class="el-icon-setting"></i>
                 <span>用户管理</span>
@@ -51,30 +51,30 @@
                 <el-menu-item index="3-1" @click="tolink('/user')">用户信息</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
-            <el-submenu index="4">
+            <el-submenu index="4"  v-if="this.$store.state.user_type == 1">
               <template slot="title">
                 <i class="el-icon-location"></i>
                 <span>在线测试</span>
               </template>
               <el-menu-item-group>
                 <template slot="title">分组一</template>
-                <el-menu-item index="4-1" @click="tolink('/course/addOnlineTest')">添加在线测试</el-menu-item>
+                <el-menu-item index="4-1" @click="tolink('/course/addOnlineTest')" >添加在线测试</el-menu-item>
                 <el-menu-item index="4-2" @click="tolink('/course/modifyOnlineTest')">修改在线测试</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
-            <el-menu-item index="5" @click="tolink('/')">
+            <el-menu-item index="5" @click="tolink('/')"  >
               <i class="el-icon-tickets"></i>
               <span slot="title">个人中心</span>
             </el-menu-item>
-            <el-menu-item index="6" @click="tolink('/course/personComment')">
+            <el-menu-item index="6" @click="tolink('/course/personComment')"  v-if="this.$store.state.user_type == 1">
               <i class="el-icon-menu"></i>
               <span slot="title">个人评论</span>
             </el-menu-item>
-            <el-menu-item index="7" @click="tolink('/modifyUser')">
+            <el-menu-item index="7" @click="tolink('/modifyUser')" >
               <i class="el-icon-news"></i>
               <span slot="title">个人信息</span>
             </el-menu-item>
-            <el-submenu index="8">
+            <el-submenu index="8"  v-if="this.$store.state.user_type == 1">
               <template slot="title">
                 <i class="el-icon-setting"></i>
                 <span>模拟试卷</span>

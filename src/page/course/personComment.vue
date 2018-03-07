@@ -1,7 +1,10 @@
 <template>
     <div class="commentManager">
         <h1>{{ msg }}</h1>
-
+        <div style="margin:10px 0;text-align:right">
+            <el-input style="width:200px" placeholder="请输入评论人" v-model="keyword"></el-input>
+            <el-button type="primary" icon="el-icon-search" @click="sreachComment">搜索</el-button>
+        </div>
         <div class="box">
             <el-table border :data="currentComments" style="width: 100%">
 
@@ -39,6 +42,7 @@
 </template>
 
 <script>
+import _ from 'lodash'
 import moment from "moment";
 import api from "../../util/api.js";
 export default {
@@ -49,7 +53,9 @@ export default {
             comments: [],
             total: 0,
             currentComments: [],
-            pageSize: 10
+            pageSize: 10,
+            keyword: "",
+            sreachComments: []
         };
     },
     created() {
@@ -66,11 +72,28 @@ export default {
                     offset + this.pageSize >= this.comments.length
                         ? this.comments.slice(offset, this.comments.length)
                         : this.comments.slice(offset, offset + this.pageSize);
-
             }
         });
     },
     methods: {
+        sreachComment() {
+            let rule = new RegExp(this.keyword.trim());
+
+            this.sreachComments = _.filter(this.comments, function(o) {
+                return rule.test(o.comment_people);
+            });
+
+            this.total = this.sreachComments.length;
+            let offset = 0;
+            this.currentComments =
+                offset + this.pageSize >= this.sreachComments.length
+                    ? this.sreachComments.slice(
+                          offset,
+                          this.sreachComments.length
+                      )
+                    : this.sreachComments.slice(offset, offset + this.pageSize);
+            this.currentPage = 1;
+        },
         handleSizeChange(val) {
             console.log(`每页 ${val} 条`);
         },
@@ -80,6 +103,18 @@ export default {
                 offset + this.pageSize >= this.comments.length
                     ? this.comments.slice(offset, this.comments.length)
                     : this.comments.slice(offset, offset + this.pageSize);
+            if (this.keyword.trim()) {
+                this.currentComments =
+                    offset + this.pageSize >= this.sreachComments.length
+                        ? this.sreachComments.slice(
+                              offset,
+                              this.sreachComments.length
+                          )
+                        : this.sreachComments.slice(
+                              offset,
+                              offset + this.pageSize
+                          );
+            }
         },
         filterTag(value, row) {
             return row.comment_type === value;

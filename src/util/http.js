@@ -20,10 +20,11 @@ axios.interceptors.request.use = instance.interceptors.request.use;
 
 //request拦截器
 instance.interceptors.request.use(
-    config => { 
+    config => {
         //每次发送请求之前检测都vuex存有token,那么都要放在请求头发送给服务器
-        if(store.state.token){
+        if (store.state.token) {
             config.headers.Authorization = `token ${store.state.token}`;
+            config.headers.userInfo = `user_id ${store.state.user_id} user_type ${store.state.user_type} username ${store.state.username}`
         }
         return config;
     },
@@ -37,18 +38,30 @@ instance.interceptors.response.use(
         return response;
     },
     error => { //默认除了2XX之外的都是错误的，就会走这里
-        if(error.response){
-            switch(error.response.status){
+        if (error.response) {
+            switch (error.response.status) {
                 case 401:
                     store.dispatch('UserLogout'); //可能是token过期，清除它
                     vm.$notify({
-                        type:'warning',
-                        message:'登录信息已过期，请重新登录'
+                        type: 'warning',
+                        message: '登录信息已过期，请重新登录'
                     });
                     router.replace({ //跳转到登录页面
                         path: '/login',
                         query: { redirect: router.currentRoute.fullPath } // 将跳转的路由path作为参数，登录成功后跳转到该路由
                     });
+                    break;
+                case 408:
+                    store.dispatch('UserLogout'); //可能是token过期，清除它
+                    vm.$notify({
+                        type: 'warning',
+                        message: '用户信息不正确，请重新登录'
+                    });
+                    router.replace({ //跳转到登录页面
+                        path: '/login',
+                        query: { redirect: router.currentRoute.fullPath } // 将跳转的路由path作为参数，登录成功后跳转到该路由
+                    });
+                    break;
             }
         }
         return Promise.reject(error.response);

@@ -148,6 +148,18 @@ export default {
     // 修改用户密码
     modifyUserPassword(params){
         return api.post('/user/modifyUserPassword',params).then(res=>res.data)
+    },
+    //管理员获取数量信息
+    getUserNumData(){
+        return api.get('/user/getUserNumData').then(res=>res.data);
+    },
+    // 管理员获取最新评论
+    getNewCommentByAdmin(){
+        return api.get('/comment/getCommentLimitByAdmin').then(res=>res.data)
+    },
+    // 管理员获取待审批课程
+    getCourseByAdmin(){
+        return api.get('/course/getCourseByAdmin').then(res=>res.data);
     }
 
 }

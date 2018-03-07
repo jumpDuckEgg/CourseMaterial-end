@@ -5,6 +5,8 @@ import actions from './actions.js'
 
 Vue.use(Vuex);
 
+
+
 const state = {
     token: window.sessionStorage.getItem('token'),
     username: window.sessionStorage.getItem('username') != undefined ? window.sessionStorage.getItem('username') : "",
