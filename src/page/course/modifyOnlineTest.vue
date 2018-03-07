@@ -184,7 +184,7 @@ export default {
         offset + this.pageSize >= this.tableData.length
           ? this.tableData.slice(offset, this.tableData.length)
           : this.tableData.slice(offset, offset + this.pageSize);
-      if (this.keyword.trim()) {
+      if (this.keyword.trim()&&this.sreachOnlineTests.length>0) {
         this.currentData =
           offset + this.pageSize >= this.sreachOnlineTests.length
             ? this.sreachOnlineTests.slice(

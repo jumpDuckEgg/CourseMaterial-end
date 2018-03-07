@@ -103,7 +103,7 @@ export default {
         offset + this.pageSize >= this.comments.length
           ? this.comments.slice(offset, this.comments.length)
           : this.comments.slice(offset, offset + this.pageSize);
-      if (this.keyword.trim()) {
+      if (this.keyword.trim() && this.sreachComments.length > 0) {
         this.currentComments =
           offset + this.pageSize >= this.sreachComments.length
             ? this.sreachComments.slice(offset, this.sreachComments.length)

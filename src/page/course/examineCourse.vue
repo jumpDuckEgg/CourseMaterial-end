@@ -118,7 +118,7 @@ export default {
         offset + this.pageSize >= this.content.length
           ? this.content.slice(offset, this.content.length)
           : this.content.slice(offset, offset + this.pageSize);
-      if (this.keyword.trim()) {
+      if (this.keyword.trim()&&this.sreachCourses.length>0) {
         this.currentData =
           offset + this.pageSize >= this.sreachCourses.length
             ? this.sreachCourses.slice(offset, this.sreachCourses.length)

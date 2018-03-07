@@ -165,32 +165,32 @@ export default {
         total: 0,
         currentPage: 1
       },
-      experimentskeyword:"",
-      sreachExperiments:[],
+      experimentskeyword: "",
+      sreachExperiments: [],
       testsData: [],
       testsDataSet: {
         pageSize: 5,
         total: 0,
         currentPage: 1
       },
-      testskeyword:"",
-      sreachTests:[],
+      testskeyword: "",
+      sreachTests: [],
       videosData: [],
       videosDataSet: {
         pageSize: 5,
         total: 0,
         currentPage: 1
       },
-      videoskeyword:"",
-      sreachVideos:[],
+      videoskeyword: "",
+      sreachVideos: [],
       homeworksData: [],
       homeworksDataSet: {
         pageSize: 5,
         total: 0,
         currentPage: 1
       },
-      homeworkskeyword:'',
-      sreachHomeworks:[]
+      homeworkskeyword: "",
+      sreachHomeworks: []
     };
   },
   created() {
@@ -306,7 +306,7 @@ export default {
   },
   methods: {
     sreachVideo() {
-      if(!this.value){
+      if (!this.value) {
         this.$message.warning("请选择一个课程");
         return false;
       }
@@ -317,8 +317,7 @@ export default {
       this.videosDataSet.total = this.sreachVideos.length;
       let offset = 0;
       this.videosData =
-        offset + this.videosDataSet.pageSize >=
-        this.sreachVideos.length
+        offset + this.videosDataSet.pageSize >= this.sreachVideos.length
           ? this.sreachVideos.slice(offset, this.sreachVideos.length)
           : this.sreachVideos.slice(
               offset,
@@ -327,7 +326,7 @@ export default {
       this.videosDataSet.currentPage = 1;
     },
     sreachTest() {
-      if(!this.value){
+      if (!this.value) {
         this.$message.warning("请选择一个课程");
         return false;
       }
@@ -338,13 +337,9 @@ export default {
       this.testsDataSet.total = this.sreachTests.length;
       let offset = 0;
       this.testsData =
-        offset + this.testsDataSet.pageSize >=
-        this.sreachTests.length
+        offset + this.testsDataSet.pageSize >= this.sreachTests.length
           ? this.sreachTests.slice(offset, this.sreachTests.length)
-          : this.sreachTests.slice(
-              offset,
-              offset + this.testsDataSet.pageSize
-            );
+          : this.sreachTests.slice(offset, offset + this.testsDataSet.pageSize);
       this.testsDataSet.currentPage = 1;
     },
     sreachHomework() {
@@ -355,8 +350,7 @@ export default {
       this.homeworksDataSet.total = this.sreachHomeworks.length;
       let offset = 0;
       this.homeworksData =
-        offset + this.homeworksDataSet.pageSize >=
-        this.sreachHomeworks.length
+        offset + this.homeworksDataSet.pageSize >= this.sreachHomeworks.length
           ? this.sreachHomeworks.slice(offset, this.sreachHomeworks.length)
           : this.sreachHomeworks.slice(
               offset,
@@ -365,7 +359,7 @@ export default {
       this.homeworksDataSet.currentPage = 1;
     },
     sreachExperiment() {
-      if(!this.value){
+      if (!this.value) {
         this.$message.warning("请选择一个课程");
         return false;
       }
@@ -387,7 +381,7 @@ export default {
       this.experimentsDataSet.currentPage = 1;
     },
     sreachCourseware() {
-      if(!this.value){
+      if (!this.value) {
         this.$message.warning("请选择一个课程");
         return false;
       }
@@ -420,6 +414,18 @@ export default {
               offset,
               offset + this.coursewaresDataSet.pageSize
             );
+      if (this.coursewareskeyword.trim() && this.sreachCoursewares.length > 0) {
+        this.coursewaresData =
+          offset + this.pageSize >= this.sreachCoursewares.length
+            ? this.sreachCoursewares.slice(
+                offset,
+                this.sreachCoursewares.length
+              )
+            : this.sreachCoursewares.slice(
+                offset,
+                offset + this.coursewaresDataSet.pageSize
+              );
+      }
     },
     handleCurrentChange1(val) {
       let offset = (val - 1) * this.experimentsDataSet.pageSize;
@@ -430,6 +436,18 @@ export default {
               offset,
               offset + this.experimentsDataSet.pageSize
             );
+      if (this.experimentskeyword.trim() && this.sreachExperiments.length > 0) {
+        this.experimentsData =
+          offset + this.pageSize >= this.sreachExperiments.length
+            ? this.sreachExperiments.slice(
+                offset,
+                this.sreachExperiments.length
+              )
+            : this.sreachExperiments.slice(
+                offset,
+                offset + this.experimentsDataSet.pageSize
+              );
+      }
     },
     handleCurrentChange2(val) {
       let offset = (val - 1) * this.homeworksDataSet.pageSize;
@@ -440,6 +458,15 @@ export default {
               offset,
               offset + this.homeworksDataSet.pageSize
             );
+      if (this.homeworkskeyword.trim() && this.sreachHomeworks.length > 0) {
+        this.homeworksData =
+          offset + this.pageSize >= this.sreachHomeworks.length
+            ? this.sreachHomeworks.slice(offset, this.sreachHomeworks.length)
+            : this.sreachHomeworks.slice(
+                offset,
+                offset + this.homeworksDataSet.pageSize
+              );
+      }
     },
     handleCurrentChange3(val) {
       let offset = (val - 1) * this.testsDataSet.pageSize;
@@ -447,6 +474,15 @@ export default {
         offset + this.testsDataSet.pageSize >= this.tests.length
           ? this.tests.slice(offset, this.tests.length)
           : this.tests.slice(offset, offset + this.testsDataSet.pageSize);
+      if (this.testskeyword.trim() && this.sreachTests.length > 0) {
+        this.testsData =
+          offset + this.pageSize >= this.sreachTests.length
+            ? this.sreachTests.slice(offset, this.sreachTests.length)
+            : this.sreachTests.slice(
+                offset,
+                offset + this.testsDataSet.pageSize
+              );
+      }
     },
     handleCurrentChange4(val) {
       let offset = (val - 1) * this.videosDataSet.pageSize;
@@ -454,6 +490,15 @@ export default {
         offset + this.videosDataSet.pageSize >= this.videos.length
           ? this.videos.slice(offset, this.videos.length)
           : this.videos.slice(offset, offset + this.videosDataSet.pageSize);
+      if (this.videoskeyword.trim() && this.sreachVideos.length > 0) {
+        this.videosData =
+          offset + this.pageSize >= this.sreachVideos.length
+            ? this.sreachVideos.slice(offset, this.sreachVideos.length)
+            : this.sreachVideos.slice(
+                offset,
+                offset + this.videosDataSet.pageSize
+              );
+      }
     },
     download(url) {
       window.location.href = url;
@@ -509,7 +554,7 @@ export default {
                             offset + this.experimentsDataSet.pageSize
                           );
                     this.experimentsDataSet.currentPage = 1;
-                    this.experimentskeyword ="";
+                    this.experimentskeyword = "";
                   }
                   if (result.tests) {
                     this.tests = result.tests;
@@ -537,7 +582,7 @@ export default {
                             offset + this.videosDataSet.pageSize
                           );
                     this.videosDataSet.currentPage = 1;
-                    this.videoskeyword="";
+                    this.videoskeyword = "";
                   }
                   if (result.homeworks) {
                     this.homeworks = result.homeworks;
@@ -552,7 +597,7 @@ export default {
                             offset + this.homeworksDataSet.pageSize
                           );
                     this.homeworksDataSet.currentPage = 1;
-                    this.homeworkskeyword="";
+                    this.homeworkskeyword = "";
                   }
                   this.$message.success(res.message);
                 }

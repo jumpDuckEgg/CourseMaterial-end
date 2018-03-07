@@ -412,7 +412,7 @@ export default {
                 offset + this.pageSize >= this.moniTests.length
                     ? this.moniTests.slice(offset, this.moniTests.length)
                     : this.moniTests.slice(offset, offset + this.pageSize);
-            if (this.keyword.trim()) {
+            if (this.keyword.trim()&& this.sreachmoniTests.length>0) {
                 this.currentMoniTest =
                     offset + this.pageSize >= this.sreachmoniTests.length
                         ? this.sreachmoniTests.slice(

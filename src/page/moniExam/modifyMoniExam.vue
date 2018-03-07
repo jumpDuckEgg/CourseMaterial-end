@@ -229,7 +229,7 @@ export default {
                 offset + this.pageSize >= this.moniExams.length
                     ? this.moniExams.slice(offset, this.moniExams.length)
                     : this.moniExams.slice(offset, offset + this.pageSize);
-            if (this.keyword.trim()) {
+            if (this.keyword.trim()&&this.sreachmoniExams.length>0) {
                 this.currentMoniExam =
                     offset + this.pageSize >= this.sreachmoniExams.length
                         ? this.sreachmoniExams.slice(
