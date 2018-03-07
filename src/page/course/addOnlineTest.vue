@@ -1,57 +1,57 @@
 <template>
-  <div class="addOnlineTest">
-    <h1>{{ msg }}</h1>
-    <div class="courseMaterial">
-      <div class="courseMaterial__item">
-        <span>选择一个课程：</span>
-        <el-select v-model="value" placeholder="请选择">
-          <el-option v-for="item in courseContent" :key="item.course_name" :label="item.course_name" :value="item.course_id">
-          </el-option>
-        </el-select>
-      </div>
-      <div class="courseMaterial__item" v-if="value">
-        <div class="courseMaterial__item-title">测试名称：
-          <el-input class="courseMaterial__item-input" v-model="title"></el-input>
-        </div>
-        <div>
-          <el-button @click="addNewSubjectFun()">添加选择题</el-button>
-        </div>
-        <el-card class="box" v-for="(item,index) in question" :key="index">
-          <el-form ref="form" label-width="100px">
-            <el-form-item label="选题：">
-              <el-button type="text" @click="deleteSubjectFun(index)">删除选题</el-button>
-            </el-form-item>
-            <el-form-item label="标题：" prop="name">
-              <el-input placeholder="未填写" v-model="item.title"></el-input>
-            </el-form-item>
-            <el-form-item label="正确答案：">
-              <el-input placeholder="未填写" disabled v-model="item.answer"></el-input>
-              请在以下选项中，勾选出正确答案
-            </el-form-item>
-            <el-form-item label="分值：">
-              <el-input v-model="item.score" @keyup.native='scoreFun(index)' type="number" min="1" max="100" placeholder="未填写"></el-input>
-            </el-form-item>
-            <el-form-item label="选项：">
-              <div class="box__item-select-element" v-for="(selectItem,selectIndex) in item.optionsData" :key="selectIndex">
-                <el-radio v-model="item.answer" :label="selectItem.id">{{selectItem.id}}</el-radio>
-                <el-input v-model="selectItem.options" placeholder="未填写" style="width:300px;margin-left:10px;"></el-input>
-                <div class="box__item-select-element_left">
-                  <el-button type="text" @click='addNewOptionsFun(index,selectIndex)' v-if="selectIndex==item.optionsData.length-1">添加选项</el-button>
-                  <el-button type="text" v-if="selectIndex==item.optionsData.length-1&&selectIndex>0" @click='deleteOptionsFun(index,selectIndex)'>删除选项</el-button>
+    <div class="addOnlineTest">
+        <h1>{{ msg }}</h1>
+        <div class="courseMaterial">
+            <div class="courseMaterial__item">
+                <span>选择一个课程：</span>
+                <el-select v-model="value" placeholder="请选择">
+                    <el-option v-for="item in courseContent" :key="item.course_name" :label="item.course_name" :value="item.course_id">
+                    </el-option>
+                </el-select>
+            </div>
+            <div class="courseMaterial__item" v-if="value">
+                <div class="courseMaterial__item-title">测试名称：
+                    <el-input class="courseMaterial__item-input" v-model="title"></el-input>
                 </div>
-              </div>
-            </el-form-item>
-            <el-form-item>
+                <div>
+                    <el-button @click="addNewSubjectFun()">添加选择题</el-button>
+                </div>
+                <el-card class="box" v-for="(item,index) in question" :key="index">
+                    <el-form ref="form" label-width="100px">
+                        <el-form-item label="选题：">
+                            <el-button type="text" @click="deleteSubjectFun(index)" v-if="index!=0">删除选题</el-button>
+                        </el-form-item>
+                        <el-form-item label="标题：" prop="name">
+                            <el-input placeholder="未填写" v-model="item.title"></el-input>
+                        </el-form-item>
+                        <el-form-item label="正确答案：">
+                            <el-input placeholder="未填写" disabled v-model="item.answer"></el-input>
+                            请在以下选项中，勾选出正确答案
+                        </el-form-item>
+                        <el-form-item label="分值：">
+                            <el-input v-model="item.score" @keyup.native='scoreFun(index)' type="number" min="1" max="100" placeholder="未填写"></el-input>
+                        </el-form-item>
+                        <el-form-item label="选项：">
+                            <div class="box__item-select-element" v-for="(selectItem,selectIndex) in item.optionsData" :key="selectIndex">
+                                <el-radio v-model="item.answer" :label="selectItem.id">{{selectItem.id}}</el-radio>
+                                <el-input v-model="selectItem.options" placeholder="未填写" style="width:300px;margin-left:10px;"></el-input>
+                                <div class="box__item-select-element_left">
+                                    <el-button type="text" @click='addNewOptionsFun(index,selectIndex)' v-if="selectIndex==item.optionsData.length-1">添加选项</el-button>
+                                    <el-button type="text" v-if="selectIndex==item.optionsData.length-1&&selectIndex>0" @click='deleteOptionsFun(index,selectIndex)'>删除选项</el-button>
+                                </div>
+                            </div>
+                        </el-form-item>
+                        <el-form-item>
 
-            </el-form-item>
-          </el-form>
-        </el-card>
-        <div class="submitBtn">
-          <el-button type="primary" @click="submitOnlineTest">提交</el-button>
+                        </el-form-item>
+                    </el-form>
+                </el-card>
+                <div class="submitBtn">
+                    <el-button type="primary" @click="submitOnlineTest">提交</el-button>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -149,6 +149,36 @@ export default {
                 course_id: this.value,
                 question: this.question
             };
+
+            let titleCounter = 0;
+            let answerCounter = 0;
+            let optionsCounter = 0;
+            for (let i = 0; i < this.question.length; i++) {
+                if (!this.question[i].answer) {
+                    answerCounter++;
+                }
+                if (!this.question[i].title) {
+                    titleCounter++;
+                }
+                let options = this.question[i].optionsData;
+                for (let j = 0; j < options.length; j++) {
+                    if (!options[j].options) {
+                        optionsCounter++;
+                    }
+                }
+            }
+            if (titleCounter > 0) {
+                this.$message.warning("存在选择题标题为空");
+                return false;
+            }
+            if (answerCounter > 0) {
+                this.$message.warning("存在选择题答案为空");
+                return false;
+            }
+            if (optionsCounter > 0) {
+                this.$message.warning("存在选择题选项为空");
+                return false;
+            }
             api.addOnlineTest(data).then(res => {
                 if (res.code == 15) {
                     this.$message.success(res.message);
