@@ -382,10 +382,10 @@ export default {
             if (!this.courseValue) {
                 this.$message.warning("请选择一个课程");
             }
-            let rule = new RegExp(this.keyword.trim());
+            let key = this.keyword.trim();
 
             this.sreachmoniTests = _.filter(this.moniTests, function(o) {
-                return rule.test(o.moniTest_title);
+                return _.includes(o.moniTest_title,key);
             });
 
             this.total = this.sreachmoniTests.length;
@@ -465,6 +465,7 @@ export default {
                                                   offset + this.pageSize
                                               );
                                     this.currentPage = 1;
+                                    this.keyword = "";
                                 }
                             });
                         }
@@ -671,6 +672,7 @@ export default {
                                                       offset + this.pageSize
                                                   );
                                         this.currentPage = 1;
+                                        this.keyword ="";
                                     }
                                 });
                             }
@@ -739,6 +741,7 @@ export default {
                                                       offset + this.pageSize
                                                   );
                                         this.currentPage = 1;
+                                        this.keyword ="";
                                     }
                                 });
                             }
@@ -796,6 +799,7 @@ export default {
                                                   offset + this.pageSize
                                               );
                                     this.currentPage = 1;
+                                    this.keyword="";
                                 }
                             });
                         }

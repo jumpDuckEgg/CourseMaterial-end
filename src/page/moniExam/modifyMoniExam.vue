@@ -170,6 +170,7 @@ export default {
                                   offset + this.pageSize
                               );
                     this.currentPage = 1;
+                    this.keyword ="";
                 }
             });
             let data2 = {
@@ -200,10 +201,9 @@ export default {
             if (!this.courseValue) {
                 this.$message.warning("请选择一个课程");
             }
-            let rule = new RegExp(this.keyword.trim());
-
+            let key = this.keyword.trim()
             this.sreachmoniExams = _.filter(this.moniExams, function(o) {
-                return rule.test(o.moniExam_title);
+                return _.includes(o.moniExam_title,key);
             });
 
             this.total = this.sreachmoniExams.length;
@@ -278,6 +278,7 @@ export default {
                                                   offset + this.pageSize
                                               );
                                     this.currentPage = 1;
+                                    this.keyword ="";
                                 }
                             });
                         }
@@ -325,6 +326,7 @@ export default {
                                               offset + this.pageSize
                                           );
                                 this.currentPage = 1;
+                                this.keyword ="";
                             }
                         });
                     }
@@ -370,6 +372,7 @@ export default {
                                                       offset + this.pageSize
                                                   );
                                         this.currentPage = 1;
+                                        this.keyword ="";
                                     }
                                 });
                             }
@@ -434,6 +437,7 @@ export default {
                                                   offset + this.pageSize
                                               );
                                     this.currentPage = 1;
+                                    this.keyword ="";
                                 }
                             });
 
