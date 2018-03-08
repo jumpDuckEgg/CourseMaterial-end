@@ -99,12 +99,12 @@
             </el-col>
         </el-row>
         <el-row :gutter="20">
-            <el-col :span="12">
+            <el-col :span="12" v-if='this.$store.state.user_type==3'>
                 <el-card class="box-card">
                     <div slot="header" class="clearfix">
                         <span>最新评论</span>
-                        <el-button style="float: right; padding: 3px 0" type="text" @click="tolink('/course/personComment')" v-if='this.$store.state.user_type==1'>更多</el-button>
-                        <el-button style="float: right; padding: 3px 0" type="text" @click="tolink('/commentManager')" v-if='this.$store.state.user_type==3'>更多</el-button>
+                      
+                        <el-button style="float: right; padding: 3px 0" type="text" @click="tolink('/commentManager')" >更多</el-button>
                     </div>
                     <div class="no-content" v-if="newComment.length==0">
                         暂无信息

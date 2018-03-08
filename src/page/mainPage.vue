@@ -66,10 +66,10 @@
               <i class="el-icon-tickets"></i>
               <span slot="title">个人中心</span>
             </el-menu-item>
-            <el-menu-item index="6" @click="tolink('/course/personComment')"  v-if="this.$store.state.user_type == 1">
+            <!-- <el-menu-item index="6" @click="tolink('/course/personComment')"  v-if="this.$store.state.user_type == 1">
               <i class="el-icon-menu"></i>
               <span slot="title">个人评论</span>
-            </el-menu-item>
+            </el-menu-item> -->
             <el-menu-item index="7" @click="tolink('/modifyUser')" >
               <i class="el-icon-news"></i>
               <span slot="title">个人信息</span>

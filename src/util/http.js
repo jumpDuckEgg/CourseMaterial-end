@@ -48,7 +48,8 @@ instance.interceptors.response.use(
                     });
                     router.replace({ //跳转到登录页面
                         path: '/login',
-                        query: { redirect: router.currentRoute.fullPath } // 将跳转的路由path作为参数，登录成功后跳转到该路由
+                        // query: { redirect: router.currentRoute.fullPath } // 将跳转的路由path作为参数，登录成功后跳转到该路由
+                        query: { redirect:"/" } // 将跳转的路由path作为参数，登录成功后跳转到该路由
                     });
                     break;
                 case 408:
@@ -59,7 +60,8 @@ instance.interceptors.response.use(
                     });
                     router.replace({ //跳转到登录页面
                         path: '/login',
-                        query: { redirect: router.currentRoute.fullPath } // 将跳转的路由path作为参数，登录成功后跳转到该路由
+                        // query: { redirect: router.currentRoute.fullPath } // 将跳转的路由path作为参数，登录成功后跳转到该路由
+                        query: { redirect: "/" } // 将跳转的路由path作为参数，登录成功后跳转到该路由
                     });
                     break;
             }

@@ -126,7 +126,7 @@ export default {
             message: "请输入一段描述",
             trigger: "blur"
           },
-          { max: 120, message: "不能超过120字", trigger: "change" }
+          { max: 200, message: "不能超过200字", trigger: "change" }
         ]
       },
       courseContent: {},
@@ -233,7 +233,8 @@ export default {
             courseImage: this.imageUrl,
             course_declaration: this.docUrl,
             star: this.starNum,
-            author: this.$store.state.username
+            author: this.$store.state.username,
+            isPublish:"examine"
           };
           _.forOwn(data, (value, key) => {
             if (value == this.courseContent[key]) {
@@ -244,7 +245,7 @@ export default {
           if (this.courseContent.isPublish == "fail") {
             _.set(data, "isPublish", "examine");
           }
-          console.log(data);
+          
           let params = {
             query: {
               course_id: this.courseContent.course_id
@@ -273,7 +274,7 @@ export default {
                 this.currentPage = 1;
                 this.keyword = "";
                 this.dialogVisible = false;
-                this.$message.success(`${res.message}`);
+                this.$message.success("更新信息成功");
               });
             } else {
               this.$message.warning(`${res.message}`);

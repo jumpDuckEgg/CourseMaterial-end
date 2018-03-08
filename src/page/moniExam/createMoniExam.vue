@@ -13,7 +13,7 @@
       <el-input placeholder="添加试卷标题" v-model="title" style="width:250px;"></el-input>
     </div>
     <div style="margin:30px 0;">
-      <el-transfer v-model="transferData" :props="{
+      <el-transfer  v-model="transferData" :props="{
       key: 'moniTest_id',
       label: 'moniTest_title' 
     }" :data="moniTests" :button-texts="['撤销', '添加']" :titles="['试题库','添加试题']" filterable @change="changeTransfer">
@@ -182,6 +182,9 @@ export default {
                             this.transferData = [];
                             this.title = "";
                             this.moniExamData = [];
+                            this.radioMoniTest = [];
+                            this.checkMoniTest=[];
+                            this.judgeMoniTest=[];
                         }
                     });
                 })

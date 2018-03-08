@@ -13,9 +13,7 @@
                 <div class="courseMaterial__item-title">测试名称：
                     <el-input class="courseMaterial__item-input" v-model="title"></el-input>
                 </div>
-                <div>
-                    <el-button @click="addNewSubjectFun()">添加选择题</el-button>
-                </div>
+                
                 <el-card class="box" v-for="(item,index) in question" :key="index">
                     <el-form ref="form" label-width="100px">
                         <el-form-item label="选题：">
@@ -46,6 +44,9 @@
                         </el-form-item>
                     </el-form>
                 </el-card>
+                <div>
+                    <el-button @click="addNewSubjectFun()">添加选择题</el-button>
+                </div>
                 <div class="submitBtn">
                     <el-button type="primary" @click="submitOnlineTest">提交</el-button>
                 </div>
@@ -152,17 +153,21 @@ export default {
 
             let titleCounter = 0;
             let answerCounter = 0;
+            let scoreCounter = 0;
             let optionsCounter = 0;
             for (let i = 0; i < this.question.length; i++) {
-                if (!this.question[i].answer) {
+                if (!this.question[i].answer.trim()) {
                     answerCounter++;
                 }
-                if (!this.question[i].title) {
+                if (!this.question[i].score) {
+                    scoreCounter++;
+                }
+                if (!this.question[i].title.trim()) {
                     titleCounter++;
                 }
                 let options = this.question[i].optionsData;
                 for (let j = 0; j < options.length; j++) {
-                    if (!options[j].options) {
+                    if (!options[j].options.trim()) {
                         optionsCounter++;
                     }
                 }
@@ -175,30 +180,48 @@ export default {
                 this.$message.warning("存在选择题答案为空");
                 return false;
             }
+            if (scoreCounter > 0) {
+                this.$message.warning("存在选择题分数为空");
+                return false;
+            }
             if (optionsCounter > 0) {
                 this.$message.warning("存在选择题选项为空");
                 return false;
             }
-            api.addOnlineTest(data).then(res => {
-                if (res.code == 15) {
-                    this.$message.success(res.message);
-                    this.title = "";
-                    this.question = [
-                        {
-                            id: 1,
-                            title: "",
-                            answer: "",
-                            score: 10,
-                            optionsData: [
+            this.$confirm("确认提交该测试, 是否继续?", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+            })
+                .then(() => {
+                    api.addOnlineTest(data).then(res => {
+                        if (res.code == 15) {
+                            this.$message.success(res.message);
+                            this.title = "";
+                            this.question = [
                                 {
-                                    id: "A",
-                                    options: ""
+                                    id: 1,
+                                    title: "",
+                                    answer: "",
+                                    score: 10,
+                                    optionsData: [
+                                        {
+                                            id: "A",
+                                            options: ""
+                                        }
+                                    ]
                                 }
-                            ]
+                            ];
                         }
-                    ];
-                }
-            });
+                    });
+                })
+                .catch(err => {
+                    console.log(err);
+                    this.$message({
+                        type: "info",
+                        message: "已取消提交"
+                    });
+                });
         }
     }
 };

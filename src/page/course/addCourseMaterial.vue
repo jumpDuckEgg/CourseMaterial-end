@@ -77,8 +77,8 @@ export default {
             experimentData: {
                 title: "实验资源",
                 switchFlag: false,
-                regx: /^(?:application\/msword|application\/pdf|application\/vnd.openxmlformats-officedocument.wordprocessingml.document)$/i,
-                regxType: "word 或 PDF",
+                regx: /^(?:application\/msword|application\/vnd.ms-excel|application\/zip|application\/pdf|application\/vnd.openxmlformats-officedocument.wordprocessingml.document)$/i,
+                regxType: "word  zip压缩包 excel 或者 PDF",
                 uploadFolder: "doc/experiment",
                 materialfileList: [],
                 limitFlieNumber: 2,

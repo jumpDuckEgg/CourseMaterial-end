@@ -95,7 +95,7 @@ export default {
             const ispptType = this.regx.test(file.type);
             if (!ispptType) {
                 // ====  组件配置  ====
-                this.$message.error(`课件仅支持 ${this.regxType} 格式!`);
+                this.$message.error(`资源仅支持 ${this.regxType} 格式!`);
                 return false;
             }
 

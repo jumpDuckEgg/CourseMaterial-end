@@ -67,7 +67,7 @@ export default {
                         message: "请输入一段描述",
                         trigger: "blur"
                     },
-                    { max: 120, message: "不能超过120字", trigger: "change" }
+                    { max: 200, message: "不能超过200字", trigger: "change" }
                 ]
             },
             dialogImageUrl: "",
