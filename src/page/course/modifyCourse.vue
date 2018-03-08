@@ -58,7 +58,7 @@
                         <el-form-item label="课程描述:" prop="description">
                             <el-input type="textarea" :rows="4" v-model="form.description"></el-input>
                         </el-form-item>
-                        <el-form-item label="头像上传:" required>
+                        <el-form-item label="课程图片上传:" required>
                             <el-upload name='file' :action="imageUploadUrl" :data="{
                         token
                       }" :file-list="logofileList" ref="logoUpload" :limit='limitNum' :on-exceed='handleExceed' :before-upload="beforeImageUpload" list-type="picture-card" :on-preview="handlePictureCardPreview" :on-progress='handleProgress' :on-success="handleSuccess" :on-remove="handleRemove">
@@ -313,7 +313,7 @@ export default {
       this.$message.warning(`当前限制选择 1 个文件`);
     },
     checkOptions(file) {
-      const isDocImage = /^(?:application\/msword|application\/pdf)$/i.test(
+      const isDocImage = /^(?:application\/msword|application\/vnd.openxmlformats-officedocument.wordprocessingml.document|application\/pdf)$/i.test(
         file.type
       );
       if (!isDocImage) {
