@@ -4,7 +4,7 @@
       <el-button @click="tolink('/register')">注册</el-button>
     </div>
     <div class="login__icon"><img src="../../static/egg.png" alt=""></div>
-    <div class="login__title">网络应用技术资源库</div>
+    <div class="login__title">网络应用技术资源共享课程资源库</div>
     <el-form ref="form" :model="form" :rules="rules" label-width="70px" status-icon class="login__form">
       <el-form-item label="用户名" prop='username'>
         <el-input v-model="form.username"></el-input>

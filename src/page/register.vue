@@ -1,7 +1,7 @@
 <template>
   <el-card class="register">
     <div class="register__icon"><img src="../../static/egg.png" alt=""></div>
-    <div class="register__title">网络应用技术资源库后台</div>
+    <div class="register__title">网络应用技术资源共享课程资源库</div>
     <el-form ref="form" :model="form" :rules="rules" label-width="70px" status-icon class="register__form">
       <el-form-item label="用户名" prop='username'>
         <el-input v-model="form.username"></el-input>

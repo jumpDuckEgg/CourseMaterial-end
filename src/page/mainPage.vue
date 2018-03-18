@@ -3,10 +3,10 @@
     <el-container>
       <el-header class="header">
         <el-row type="flex" justify="space-between">
-          <el-col :span="9">
+          <el-col :span="14">
             <el-row type="flex">
               <el-col class="header__icon" :span="3"><img src="../../static/egg.png" alt=""></el-col>
-              <el-col class="header__title" :span="10">网络应用技术资源库后台</el-col>
+              <el-col class="header__title" :span="10">网络应用技术资源共享课程资源库</el-col>
 
             </el-row>
           </el-col>

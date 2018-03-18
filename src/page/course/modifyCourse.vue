@@ -1,99 +1,99 @@
 <template>
-    <div class="deleteCourse" v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
-        <h1>{{ msg }}</h1>
-        <div style="margin:10px 0;text-align:right">
-            <el-input style="width:200px" placeholder="请输入课程名称" v-model="keyword"></el-input>
-            <el-button type="primary" icon="el-icon-search" @click="sreachCourse">搜索</el-button>
-        </div>
+  <div class="deleteCourse" v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
+    <h1>{{ msg }}</h1>
+    <div style="margin:10px 0;text-align:right">
+      <el-input style="width:200px" placeholder="请输入课程名称" v-model="keyword"></el-input>
+      <el-button type="primary" icon="el-icon-search" @click="sreachCourse">搜索</el-button>
+    </div>
+    <div>
+      <el-table border :data="currentData" style="width:100%;margin:20px 0;">
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-steps :active="activeFlag(props.row.isPublish)" finish-status="success" :space="200">
+              <el-step title="上传" description="上传资料成功"></el-step>
+              <el-step title="审核中" description="等待管理员的审核"></el-step>
+
+              <template v-if="props.row.isPublish=='fail'">
+                <el-step title="审核失败" status='error' :description="props.row.examineMessage"></el-step>
+              </template>
+              <template v-else>
+                <el-step title="审核成功" description="审核成功"></el-step>
+              </template>
+            </el-steps>
+          </template>
+        </el-table-column>
+        <el-table-column prop="course_id" sortable label="课程id" width="90"></el-table-column>
+        <el-table-column prop="author" label="创建人" width="120"></el-table-column>
+
+        <el-table-column prop="course_name" label="课程名称" width="150"></el-table-column>
+        <el-table-column label="课程图片" width="110">
+          <template slot-scope="scope">
+            <img :src="scope.row.courseImage" alt="课程图片" style="width:40px;height:40px;">
+          </template>
+        </el-table-column>
+        <el-table-column label="创建时间" width="130">
+          <template slot-scope="scope">
+            <el-tag type="success">{{scope.row.createdTime|formatDate}}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="collectNum" sortable label="课程收藏数" width="120"></el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button size="mini" :disabled="scope.row.isPublish=='examine'" @click="handleEdit(scope.$index, scope.row)">{{scope.row.isPublish=="fail"?'重新上传':'编辑'}}</el-button>
+            <el-button size="mini" type="danger" :disabled="scope.row.isPublish=='examine'" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+
+      </el-table>
+      <div style="text-align:center;margin:10px 0;">
+        <el-pagination layout="prev, pager, next" @size-change="handleSizeChange" @current-change="handleCurrentChange" :total="total" :current-page.sync='currentPage'>
+        </el-pagination>
+      </div>
+      <el-dialog title="编辑课程" :visible.sync="dialogVisible" center :before-close="handleClose">
         <div>
-            <el-table border :data="currentData" style="width:100%;margin:20px 0;">
-                <el-table-column type="expand">
-                    <template slot-scope="props">
-                        <el-steps :active="activeFlag(props.row.isPublish)" finish-status="success" :space="200">
-                            <el-step title="上传" description="上传资料成功"></el-step>
-                            <el-step title="审核中" description="等待管理员的审核"></el-step>
-
-                            <template v-if="props.row.isPublish=='fail'">
-                                <el-step title="审核失败" status='error' :description="props.row.examineMessage"></el-step>
-                            </template>
-                            <template v-else>
-                                <el-step title="审核成功" description="审核成功"></el-step>
-                            </template>
-                        </el-steps>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="course_id" sortable label="课程id" width="90"></el-table-column>
-                <el-table-column prop="author" label="创建人" width="120"></el-table-column>
-
-                <el-table-column prop="course_name" label="课程名称" width="150"></el-table-column>
-                <el-table-column label="课程图片" width="110">
-                    <template slot-scope="scope">
-                        <img :src="scope.row.courseImage" alt="课程图片" style="width:40px;height:40px;">
-                    </template>
-                </el-table-column>
-                <el-table-column label="创建时间" width="130">
-                    <template slot-scope="scope">
-                        <el-tag type="success">{{scope.row.createdTime|formatDate}}</el-tag>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="collectNum" sortable label="课程收藏数" width="120"></el-table-column>
-                <el-table-column label="操作">
-                    <template slot-scope="scope">
-                        <el-button size="mini" :disabled="scope.row.isPublish=='examine'" @click="handleEdit(scope.$index, scope.row)">{{scope.row.isPublish=="fail"?'重新上传':'编辑'}}</el-button>
-                        <el-button size="mini" type="danger" :disabled="scope.row.isPublish=='examine'" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-                    </template>
-                </el-table-column>
-
-            </el-table>
-            <div style="text-align:center;margin:10px 0;">
-                <el-pagination layout="prev, pager, next" @size-change="handleSizeChange" @current-change="handleCurrentChange" :total="total" :current-page.sync='currentPage'>
-                </el-pagination>
-            </div>
-            <el-dialog title="编辑课程" :visible.sync="dialogVisible" center :before-close="handleClose">
-                <div>
-                    <el-form ref="form" :model="form" :rules="rules" label-width="100px" @submit.native.prevent>
-                        <el-form-item label="课程名称:" prop="name">
-                            <el-input v-model="form.name"></el-input>
-                        </el-form-item>
-                        <el-form-item label="课程描述:" prop="description">
-                            <el-input type="textarea" :rows="4" v-model="form.description"></el-input>
-                        </el-form-item>
-                        <el-form-item label="课程图片上传:" required>
-                            <el-upload name='file' :action="imageUploadUrl" :data="{
+          <el-form ref="form" :model="form" :rules="rules" label-width="100px" @submit.native.prevent>
+            <el-form-item label="课程名称:" prop="name">
+              <el-input v-model="form.name"></el-input>
+            </el-form-item>
+            <el-form-item label="课程描述:" prop="description">
+              <el-input type="textarea" :rows="4" v-model="form.description"></el-input>
+            </el-form-item>
+            <el-form-item label="课程图片上传:" required>
+              <el-upload name='file' :action="imageUploadUrl" :data="{
                         token
                       }" :file-list="logofileList" ref="logoUpload" :limit='limitNum' :on-exceed='handleExceed' :before-upload="beforeImageUpload" list-type="picture-card" :on-preview="handlePictureCardPreview" :on-progress='handleProgress' :on-success="handleSuccess" :on-remove="handleRemove">
-                                <i class="el-icon-plus"></i>
-                            </el-upload>
-                            <el-dialog :visible.sync="PicturedialogVisible">
-                                <img width="100%" :src="dialogImageUrl" alt="">
-                            </el-dialog>
-                        </el-form-item>
-                        <el-form-item label="星数:">
-                            <el-rate v-model="starNum" class="star-rate"></el-rate>
-                        </el-form-item>
-                        <el-form-item label="课程申报书:" required>
-                            <el-upload name='file' drag :data="{
+                <i class="el-icon-plus"></i>
+              </el-upload>
+              <el-dialog :visible.sync="PicturedialogVisible">
+                <img width="100%" :src="dialogImageUrl" alt="">
+              </el-dialog>
+            </el-form-item>
+            <el-form-item label="星数:">
+              <el-rate v-model="starNum" class="star-rate"></el-rate>
+            </el-form-item>
+            <el-form-item label="课程申报书:" required>
+              <el-upload name='file' drag :data="{
                         'token':docToken
                       }" ref="docUpload" :file-list="docfileList" :action="docUploadUrl" :before-upload="beforeDocUpload" :limit="limitNum" :on-exceed='handleExceed' :on-success="handleDocSuccess" :on-progress="handleProgress" :on-remove="handleDocRemove">
-                                <i class="el-icon-upload"></i>
-                                <div class="el-upload__text">将文件拖到此处，或
-                                    <em>点击上传</em>
-                                </div>
-                                <!-- <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div> -->
-                            </el-upload>
-                        </el-form-item>
-                        <el-form-item>
-
-                        </el-form-item>
-                    </el-form>
+                <i class="el-icon-upload"></i>
+                <div class="el-upload__text">将文件拖到此处，或
+                  <em>点击上传</em>
                 </div>
-                <span slot="footer" class="dialog-footer">
-                    <el-button type="primary" @click="submitCourse" :disabled="disabledFlag" :loading="submintFlag">提交</el-button>
-                    <el-button :loading="submintFlag" :disabled="disabledFlag" @click="resetContent">重置</el-button>
-                </span>
-            </el-dialog>
+                <!-- <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div> -->
+              </el-upload>
+            </el-form-item>
+            <el-form-item>
+
+            </el-form-item>
+          </el-form>
         </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="submitCourse" :disabled="disabledFlag" :loading="submintFlag">提交</el-button>
+          <el-button :loading="submintFlag" :disabled="disabledFlag" @click="resetContent">重置</el-button>
+        </span>
+      </el-dialog>
     </div>
+  </div>
 </template>
 
 <script>
@@ -199,7 +199,7 @@ export default {
         offset + this.pageSize >= this.content.length
           ? this.content.slice(offset, this.content.length)
           : this.content.slice(offset, offset + this.pageSize);
-      if (this.keyword.trim()&&this.sreachCourses.length>0) {
+      if (this.keyword.trim() && this.sreachCourses.length > 0) {
         this.currentData =
           offset + this.pageSize >= this.sreachCourses.length
             ? this.sreachCourses.slice(offset, this.sreachCourses.length)
@@ -234,7 +234,7 @@ export default {
             course_declaration: this.docUrl,
             star: this.starNum,
             author: this.$store.state.username,
-            isPublish:"examine"
+            isPublish: "examine"
           };
           _.forOwn(data, (value, key) => {
             if (value == this.courseContent[key]) {
@@ -245,7 +245,7 @@ export default {
           if (this.courseContent.isPublish == "fail") {
             _.set(data, "isPublish", "examine");
           }
-          
+
           let params = {
             query: {
               course_id: this.courseContent.course_id
@@ -263,7 +263,12 @@ export default {
               this.imageUrl = "";
               this.docUrl = "";
               this.starNum = 0;
-              api.findAllCourse().then(res => {
+              let data = {
+                params: {
+                  author: this.$store.state.username
+                }
+              };
+              api.findAllCourseByAuthor(data).then(res => {
                 this.content = res.data;
                 this.total = this.content.length;
                 let offset = 0;
@@ -417,7 +422,12 @@ export default {
                 type: "success",
                 message: "删除成功!"
               });
-              api.findAllCourse().then(res => {
+              let data = {
+                params: {
+                  author: this.$store.state.username
+                }
+              };
+              api.findAllCourseByAuthor(data).then(res => {
                 console.log(res.data);
                 this.content = res.data;
                 this.total = this.content.length;
