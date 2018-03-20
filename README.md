@@ -1,6 +1,6 @@
-# end
+# 课程资源库后台管理
 
-> A Vue.js project
+> 通过vue全家桶+elementui+axios实现
 
 ## Build Setup
 
